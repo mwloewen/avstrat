@@ -16,15 +16,8 @@ Layers upload sheet, usually uploaded with \code{readxl::read_xlsx()}
 linked to filepath.}
 }
 \value{
-A named list with three elements:
-\describe{
-\item{data_strat}{A data frame containing the merged and cleaned stratigraphic
-data, ready for further analysis.}
-\item{SectionList}{A character vector of unique stratigraphic section names
-present in the input data.}
-\item{stations}{A data frame of cleaned station metadata, with conflicts
-resolved and one row per station.}
-}
+A data frame containing the merged and cleaned stratigraphic
+data, ready for further analysis.
 }
 \description{
 \code{load_geodiva_forms()} processes and cleans stratigraphic data from GeoDIVA
@@ -48,9 +41,7 @@ if (requireNamespace("readxl", quietly = TRUE)) {
   station_sample_upload <- readxl::read_xlsx(path_samples, sheet = "Data")
   layer_upload <- readxl::read_xlsx(path_layers, sheet = "Data")
 
- result <- load_geodiva_forms(station_sample_upload, layer_upload)
- head(result$data_strat)
- result$SectionList
- head(result$stations)
+  result <- load_geodiva_forms(station_sample_upload, layer_upload)
+  head(result)  # result is a data frame
 }
 }

@@ -18,15 +18,8 @@
 #' @importFrom stats na.omit
 #'
 #' @return
-#' A named list with three elements:
-#' \describe{
-#'   \item{data_strat}{A data frame containing the merged and cleaned stratigraphic
-#'     data, ready for further analysis.}
-#'   \item{SectionList}{A character vector of unique stratigraphic section names
-#'     present in the input data.}
-#'   \item{stations}{A data frame of cleaned station metadata, with conflicts
-#'     resolved and one row per station.}
-#' }
+#' A data frame containing the merged and cleaned stratigraphic
+#'     data, ready for further analysis.
 #' @export
 #'
 #' @examples
@@ -43,10 +36,8 @@
 #'   station_sample_upload <- readxl::read_xlsx(path_samples, sheet = "Data")
 #'   layer_upload <- readxl::read_xlsx(path_layers, sheet = "Data")
 #'
-#'  result <- load_geodiva_forms(station_sample_upload, layer_upload)
-#'  head(result$data_strat)
-#'  result$SectionList
-#'  head(result$stations)
+#'   result <- load_geodiva_forms(station_sample_upload, layer_upload)
+#'   head(result)  # result is a data frame
 #' }
 load_geodiva_forms <- function(station_sample_upload,
                                layer_upload) {
@@ -125,17 +116,6 @@ load_geodiva_forms <- function(station_sample_upload,
     ) |>
     dplyr::filter(!is.na(.data[["stratlayer_order"]]))
 
-  # Create a clean sample list
-  samples <- station_sample_upload |>
-    dplyr::select(
-      .data[["StationID"]], .data[["SampleID"]], .data[["sample_parent_id"]],
-      .data[["at_num"]], .data[["possible_source_volcanoes"]],
-      .data[["EruptionID"]], .data[["SampType1"]], .data[["SampType2"]],
-      .data[["SampleDesc"]], .data[["SampUnit"]],
-      .data[["ReasonforCollection"]]
-    ) |>
-    dplyr::filter(!is.na(.data[["SampleID"]]))
-
   # Join the tables
   data_strat <- layers |>
     dplyr::left_join(sections, by = "stratsection_name") |>
@@ -143,15 +123,10 @@ load_geodiva_forms <- function(station_sample_upload,
     dplyr::rename(StationID = .data[["station_id"]]) |>
     dplyr::rename(SampleID = .data[["stratlayer_sample"]])
 
-  SectionList <- sort(unique(data_strat[["stratsection_name"]]))
-
   # Print the section list
+  SectionList <- sort(unique(data_strat[["stratsection_name"]]))
   cat(paste(SectionList, collapse = "\n"))
 
-  # Return everything in a named list
-  return(list(
-    data_strat   = data_strat,
-    SectionList  = SectionList,
-    stations     = stations
-  ))
+  # Return dataframe
+  return(data_strat)
 }
