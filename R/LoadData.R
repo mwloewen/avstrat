@@ -16,6 +16,7 @@
 #'
 #' @import dplyr
 #' @importFrom stats na.omit
+#' @importFrom rlang .data
 #'
 #' @return
 #' A data frame containing the merged and cleaned stratigraphic
