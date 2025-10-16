@@ -25,8 +25,9 @@
 #' @param layer_border_linewidth Border line width for polygons.
 #'
 #' @importFrom rlang .data
-#' @import ggplot2
-#' @import dplyr
+#' @importFrom ggplot2 ggplot geom_polygon aes scale_fill_manual scale_y_continuous
+#'   scale_x_continuous coord_cartesian ggtitle theme element_text unit guides guide_legend
+#'   element_blank
 #'
 #' @returns A ggplot object
 #' @export

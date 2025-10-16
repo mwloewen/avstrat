@@ -44,8 +44,6 @@
 #'  }
 #'
 #' @importFrom rlang .data
-#' @import dplyr
-#' @import tidyr
 #' @export
 #'
 #' @examples

@@ -22,8 +22,6 @@
 #'   }
 #'   Missing columns are added automatically and filled with \code{NA}.
 #'
-#' @import dplyr
-#' @import tidyr
 #' @importFrom rlang .data
 #'
 #' @return A tibble with the original data plus additional columns:

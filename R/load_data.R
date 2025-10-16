@@ -14,7 +14,6 @@
 #'  Layers upload sheet, usually uploaded with `readxl::read_xlsx()`
 #'  linked to filepath.
 #'
-#' @import dplyr
 #' @importFrom stats na.omit
 #' @importFrom rlang .data
 #'
