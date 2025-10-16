@@ -7,6 +7,7 @@
 ggstrat(
   df,
   stratsection_name,
+  grainsize_direction = c("increasing", "decreasing"),
   grainsize_labs = gs_volc_abbr,
   xlim = c(-1, 10),
   ylim = NULL,
@@ -23,6 +24,17 @@ Must include columns \code{stratsection_name}, \code{stratlayer_order},
 \code{grainsize}, \code{depth}, and the column specified by \code{layer_fill}.}
 
 \item{stratsection_name}{Character string giving the section name to filter.}
+
+\item{grainsize_direction}{Character string, one of \code{"increasing"} or
+\code{"decreasing"}. Controls the numeric mapping of grain sizes:
+\itemize{
+\item \code{"increasing"} (default): clay/silt = 1, ..., blocks/bombs/boulders = 10.
+\item \code{"decreasing"}: clay/silt = 10, ..., blocks/bombs/boulders = 1.
+}
+Increasing will show coarser units as bigger polygons (more prominent)
+which is espeically useful for emphasizing more energentic volcanic deposits.
+Decreasing will show finer (typically more resistive) units as bigger
+which may better match observed erosional profiles.}
 
 \item{grainsize_labs}{Character vector of labels for the x-axis. Several predefined options are available:
 \itemize{

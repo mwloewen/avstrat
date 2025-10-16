@@ -4,7 +4,7 @@
 \alias{add_layer_width}
 \title{Reformat stratigraphic layer data for polygon plotting}
 \usage{
-add_layer_width(df)
+add_layer_width(df, grainsize_direction = c("increasing", "decreasing"))
 }
 \arguments{
 \item{df}{A data frame containing stratigraphic layer information. Expected
@@ -17,6 +17,17 @@ terms (see details).
 \item \code{Depth_top}, \code{Depth_bottom}: numeric depths for each
 layer. These should be determined after running \code{\link[=add_depths]{add_depths()}}.
 }}
+
+\item{grainsize_direction}{Character string, one of \code{"increasing"} or
+\code{"decreasing"}. Controls the numeric mapping of grain sizes:
+\itemize{
+\item \code{"increasing"} (default): clay/silt = 1, ..., blocks/bombs/boulders = 10.
+\item \code{"decreasing"}: clay/silt = 10, ..., blocks/bombs/boulders = 1.
+}
+Increasing will show coarser units as bigger polygons (more prominent)
+which is espeically useful for emphasizing more energentic volcanic deposits.
+Decreasing will show finer (typically more resistive) units as bigger
+which may better match observed erosional profiles.}
 }
 \value{
 A tibble in long format with columns:

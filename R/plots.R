@@ -6,6 +6,16 @@
 #'   Must include columns \code{stratsection_name}, \code{stratlayer_order},
 #'   \code{grainsize}, \code{depth}, and the column specified by \code{layer_fill}.
 #' @param stratsection_name Character string giving the section name to filter.
+#' @param grainsize_direction Character string, one of \code{"increasing"} or
+#'   \code{"decreasing"}. Controls the numeric mapping of grain sizes:
+#'   \itemize{
+#'     \item \code{"increasing"} (default): clay/silt = 1, ..., blocks/bombs/boulders = 10.
+#'     \item \code{"decreasing"}: clay/silt = 10, ..., blocks/bombs/boulders = 1.
+#'   }
+#'   Increasing will show coarser units as bigger polygons (more prominent)
+#'   which is espeically useful for emphasizing more energentic volcanic deposits.
+#'   Decreasing will show finer (typically more resistive) units as bigger
+#'   which may better match observed erosional profiles.
 #' @param grainsize_labs Character vector of labels for the x-axis. Several predefined options are available:
 #'  \itemize{
 #'    \item \code{gs_volc_abbr}: Volcanic grainsize abbreviations (default).
@@ -38,6 +48,7 @@
 #'  ggstrat(stratsection_name = "21LSHD02")
 ggstrat <- function(df,
                     stratsection_name,
+                    grainsize_direction = c("increasing", "decreasing"),
                     grainsize_labs = gs_volc_abbr,
                     xlim = c(-1, 10),
                     ylim = NULL,
@@ -60,12 +71,14 @@ ggstrat <- function(df,
                     "cobble", "boulders")
   gs_numeric <- c("NA", "<1/16 mm", "1/16-1/8 mm", "1/8-1/4 mm", "1/4-1/2 mm",
                   "1/2-1 mm", "1-2 mm", "2-4 mm", "4-16 mm", "1.6-6.4 cm", ">6.4 cm")
-
+  # grainsize_labs options
+  grainsize_direction <- match.arg(grainsize_direction)
+  x_breaks <- if (grainsize_direction == "increasing") 0:10 else 10:0
   # First, filter data to the station you want to plot
   data_plot <- df |>
     dplyr::filter({{ stratsection_name }} == stratsection_name) |>
     # Prepare data for geom_polygon layer of a strat section.
-    add_layer_width() |>
+    add_layer_width(grainsize_direction = grainsize_direction) |>
     dplyr::arrange(.data[["stratlayer_order"]], .data[["size_loc"]])
 
   plot <- ggplot(data_plot) +
@@ -83,7 +96,7 @@ ggstrat <- function(df,
                        trans = "reverse") +
     scale_x_continuous(limits = xlim,
                        name = "Grainsize",
-                       breaks = c(0,1,2,3,4,5,6,7,8,9,10),
+                       breaks = x_breaks,
                        labels = grainsize_labs) +
     coord_cartesian(xlim = xlim,
                     ylim = ylim,
