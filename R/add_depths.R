@@ -97,9 +97,10 @@ add_depths <- function(df) {
     dplyr::group_by(.data[["stratsection_name"]]) |>
     dplyr::mutate(stratlayer_order_start_at_top = as.logical(.data[["stratlayer_order_start_at_top"]])) |>
     dplyr::arrange(
-      dplyr::case_when(
-        .data[["stratlayer_order_start_at_top"]] ~ as.numeric(.data[["stratlayer_order"]]),
-        !.data[["stratlayer_order_start_at_top"]] ~ dplyr::desc(as.numeric(.data[["stratlayer_order"]]))
+      dplyr::if_else(
+        .data[["stratlayer_order_start_at_top"]],
+        as.numeric(.data[["stratlayer_order"]]),
+        -as.numeric(.data[["stratlayer_order"]])   # negate to reverse
       ),
       .by_group = TRUE
     ) |>

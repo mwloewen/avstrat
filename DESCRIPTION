@@ -7,15 +7,22 @@ Authors@R:
     role = c("aut", "cre"),
     comment = c(ORCID = "0000-0002-5621-285X"))
 Description: Tools for data processing and generating stratigraphic sections 
-    for volcanic deposits and tephrastratigraphy.
+    for volcanic deposits and tephrastratigraphy. Package was developed for
+    studies on Alaska volcanoes ("av") where stratigraphic ("strat") figures 
+    are needed for interpreting eruptive histories, but the methods are applicable
+    to any sediment stratigraphy project. 
 License: CC0
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.3
 Imports: 
     dplyr,
+    ggplot2,
     tidyr,
     rlang
 Suggests:
     readxl,
     tibble
+Depends: 
+    R (>= 3.5)
+LazyData: true

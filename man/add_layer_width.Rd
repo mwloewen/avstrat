@@ -7,43 +7,61 @@
 add_layer_width(df)
 }
 \arguments{
-\item{df}{A data frame containing stratigraphic layer information.
-Expected columns include:
+\item{df}{A data frame containing stratigraphic layer information. Expected
+columns include:
 \itemize{
 \item \code{grainsize_top}, \code{grainsize_bottom}: grain size labels.
-\item \code{Depth_top}, \code{Depth_bottom}: numeric depths for each layer.
+If data are imported using \pkg{avstrat} load functions, correct data should
+be in the correct format. If not, grainsize values must match expected
+terms (see details).
+\item \code{Depth_top}, \code{Depth_bottom}: numeric depths for each
+layer. These should be determined after running \code{\link[=add_depths]{add_depths()}}.
 }}
 }
 \value{
 A tibble in long format with columns:
 \itemize{
-\item \code{size_loc}: identifier for polygon vertex location.
+\item \code{size_loc}: identifier for polygon vertex locations.
 \item \code{size_text}: original grain size text.
 \item \code{depth}: numeric depth coordinate.
 \item \code{grainsize}: numeric grain size code for plotting.
 }
 }
 \description{
-This function reshapes stratigraphic layer data into a "long" format
-suitable for plotting polygons (e.g., with \code{geom_polygon}) in a
-stratigraphic section diagram. It constructs left/right grain size
-boundaries, gathers them into long format, assigns depth coordinates,
-and converts grain size text labels into numeric values for plotting.
+This function reshapes stratigraphic layer grainsize data into a "long" format suitable
+for plotting polygons in a stratigraphic section diagram. It constructs left/right grain size boundaries, gathers them
+into long format, assigns depth coordinates, and converts grain size text
+labels into numeric values for plotting.
 }
 \details{
 Grain size text values are mapped to numeric codes (e.g., clay = 1,
-silt = 1, very fine sand = 2, ..., blocks/bombs/boulders = 10).
-The mapping is designed for consistent plotting across multiple
-stratigraphic sections.
+silt = 1, very fine sand = 2, ..., blocks/bombs/boulders = 10). The mapping
+is designed for stragigraphic plots plotting grainsize on the x-axis. Requires
+grainsize values to match list:
+\itemize{
+\item clay (<1/256 mm), clay, c
+\item silt (1/256-1/16 mm), silt, s
+\item very fine ash/sand (1/16-1/8 mm
+\item very_fine_ash_sand, very fine sand/ash, very fine ash, vfa, very fine sand, vfs
+\item fine ash/sand (1/8-1/4 mm), fine_ash_sand, fine sand/ash, fine ash, fa, fine sand, fs
+\item medium ash/sand (1/4-1/2 mm), medium_ash_sand, medium sand/ash, medium ash, ma, medium sand, ms
+\item coarse ash/sand (1/2-1 mm), coarse_ash_sand, coarse sand/ash, coarse ash, ca, coarse sand, cs
+\item very coarse ash/sand (1-2 mm), very_coarse_ash_sand, very coarse sand/ash, very coarse ash, vca, very coarse sand, vcs
+\item fine lapilli/granule (2-4 mm), fine_lapilli_granule, granule/fine lapilli, fine lapilli, fl, granule, g
+\item medium lapilli/pebble (4-16 mm), medium_lapilli_pebble, pebble/medium lapilli, medium lapilli, ml, pebble, p
+\item coarse lapilli/cobble (1.6-6.4 cm), coarse_lapilli_cobble, cobble/coarse lapilli, coarse lapilli, cl, cobble, co
+\item blocks/bombs/boulders (>6.4 cm), block_bomb_boulder, blocks/bombs/boulders, block, bomb, boulder, b
+}
 }
 \examples{
 library(dplyr)
 library(tidyr)
 df <- tidyr::tibble(
-  grainsize_top = c("clay", "silt"),
-  grainsize_bottom = c("silt", "sand"),
-  Depth_top = c(0, 10),
-  Depth_bottom = c(10, 20)
+stratlayer_order = c(1,2),
+grainsize_top = c("clay", "coarse sand/ash"),
+grainsize_bottom = c( "silt", "medium sand/ash"),
+Depth_top = c(0, 10),
+Depth_bottom = c(10, 20)
 )
 add_layer_width(df)
 }
