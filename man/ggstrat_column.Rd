@@ -45,6 +45,5 @@ variable mapped to the x-axis. Each layer is drawn as a fixed-width rectangle.
 }
 \examples{
 example_data_strat |>
-  add_depths() |>
   ggstrat_column(stratsection_name = "21LSHD02")
 }

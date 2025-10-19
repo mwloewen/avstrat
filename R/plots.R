@@ -77,6 +77,8 @@ ggstrat <- function(df,
   # First, filter data to the station you want to plot
   data_plot <- df |>
     dplyr::filter({{ stratsection_name }} == stratsection_name) |>
+    # Add depth info
+    add_depths() |>
     # Prepare data for geom_polygon layer of a strat section.
     add_layer_width(grainsize_direction = grainsize_direction) |>
     dplyr::arrange(.data$stratlayer_order, .data$size_loc)
@@ -142,7 +144,6 @@ ggstrat <- function(df,
 #'
 #' @examples
 #' example_data_strat |>
-#'   add_depths() |>
 #'   ggstrat_column(stratsection_name = "21LSHD02")
 ggstrat_column <- function(df,
                            stratsection_name,
@@ -154,7 +155,9 @@ ggstrat_column <- function(df,
                            layer_border_linewidth = 0.2) {
   # First, filter data to the station you want to plot
   data_plot <- df |>
-    dplyr::filter({{ stratsection_name }} == stratsection_name)
+    dplyr::filter({{ stratsection_name }} == stratsection_name) |>
+    # Add depth info
+    add_depths()
 
   plot <- ggplot(data = data_plot) +
     geom_rect(
@@ -218,17 +221,14 @@ ggstrat_column <- function(df,
 #' @examples
 #' # Example 1: Basic usage
 #' example_data_strat |>
-#'   add_depths() |>
 #'   ggstrat_sampleID(stratsection_name = "21LSHD02")
 #'
 #' # Example 2: Combine with a stratigraphic section plot using patchwork
 #' if (requireNamespace("patchwork", quietly = TRUE)) {
 #'   stratsection <- example_data_strat |>
-#'     add_depths() |>
 #'     ggstrat(stratsection_name = "21LSHD02")
 #'
 #'   samples <- example_data_strat |>
-#'     add_depths() |>
 #'     ggstrat_sampleID(stratsection_name = "21LSHD02")
 #'
 #'   stratsection + samples
@@ -240,9 +240,12 @@ ggstrat_sampleID <- function(df,
                              ybreaks = 7) {
   # First, filter data to the station you want to plot
   data_plot <- df |>
-    dplyr::filter({{ stratsection_name }} == stratsection_name)
+    dplyr::filter({{ stratsection_name }} == stratsection_name) |>
+    # Add depth info
+    add_depths()
   # Second, filter a data frame with only samples to plot
   sample_plot <- data_plot |>
+      add_depths() |>
     tidyr::drop_na(.data$SampleID)
   # Now we can make the plot
   plot <- ggplot(data = data_plot) +

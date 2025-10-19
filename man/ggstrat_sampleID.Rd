@@ -30,17 +30,14 @@ ggplot objects.
 \examples{
 # Example 1: Basic usage
 example_data_strat |>
-  add_depths() |>
   ggstrat_sampleID(stratsection_name = "21LSHD02")
 
 # Example 2: Combine with a stratigraphic section plot using patchwork
 if (requireNamespace("patchwork", quietly = TRUE)) {
   stratsection <- example_data_strat |>
-    add_depths() |>
     ggstrat(stratsection_name = "21LSHD02")
 
   samples <- example_data_strat |>
-    add_depths() |>
     ggstrat_sampleID(stratsection_name = "21LSHD02")
 
   stratsection + samples
