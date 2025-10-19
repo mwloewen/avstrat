@@ -94,7 +94,7 @@ add_layer_width <- function(df, grainsize_direction = c("increasing", "decreasin
         levels = c("a_LeftTop", "b_SizeTop", "c_SizeBottom", "d_LeftBottom")
       )
     ) |>
-    dplyr::arrange(.data[["stratlayer_order"]], .data[["size_loc"]]) |>
+    dplyr::arrange(.data$stratlayer_order, .data$size_loc) |>
     dplyr::mutate(
       grainsize_base = dplyr::case_when(
         .data[["size_text"]] == "axis" ~ -1,
@@ -133,7 +133,6 @@ add_layer_width <- function(df, grainsize_direction = c("increasing", "decreasin
       grainsize = dplyr::case_when(
         grainsize_base %in% 0:10 & grainsize_direction == "decreasing" ~ 10 - grainsize_base,
         TRUE ~ grainsize_base
-      ),
-      grainsize = as.numeric(.data[["grainsize"]])
+      )
     )
 }

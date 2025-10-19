@@ -79,7 +79,7 @@ ggstrat <- function(df,
     dplyr::filter({{ stratsection_name }} == stratsection_name) |>
     # Prepare data for geom_polygon layer of a strat section.
     add_layer_width(grainsize_direction = grainsize_direction) |>
-    dplyr::arrange(.data[["stratlayer_order"]], .data[["size_loc"]])
+    dplyr::arrange(.data$stratlayer_order, .data$size_loc)
 
   plot <- ggplot(data_plot) +
     geom_polygon(
@@ -150,35 +150,132 @@ ggstrat_column <- function(df,
                            ybreaks = 7,
                            layer_fill = "layer_type",
                            layer_fill_color = "stratpal_rpg",
-                           layer_border_color = 'black',
-                           layer_border_linewidth = 0.2
-) {
+                           layer_border_color = "black",
+                           layer_border_linewidth = 0.2) {
   # First, filter data to the station you want to plot
   data_plot <- df |>
     dplyr::filter({{ stratsection_name }} == stratsection_name)
 
   plot <- ggplot(data = data_plot) +
     geom_rect(
-      aes(group = .data[["stratlayer_order"]], xmin = 0, xmax = 0.1,
-          ymin = .data[["Depth_bottom"]], ymax = .data[["Depth_top"]],
-          fill = factor(.data[[layer_fill]])), #Fix: stratlayer_order might not be defined for depth explicit template
+      aes(
+        group = .data[["stratlayer_order"]], xmin = 0, xmax = 0.1,
+        ymin = .data[["Depth_bottom"]], ymax = .data[["Depth_top"]],
+        fill = factor(.data[[layer_fill]])
+      ), # Fix: stratlayer_order might not be defined for depth explicit template
       color = layer_border_color,
-      linewidth = layer_border_linewidth) +
+      linewidth = layer_border_linewidth
+    ) +
     scale_fill_stratpal(palette = layer_fill_color) +
     scale_x_continuous(breaks = NULL) +
-    scale_y_continuous(name = "Depth (cm)",
-                       n.breaks = ybreaks,
-                       trans = "reverse") +
-    coord_cartesian(ylim = ylim,
-                    expand = F) +
+    scale_y_continuous(
+      name = "Depth (cm)",
+      n.breaks = ybreaks,
+      trans = "reverse"
+    ) +
+    coord_cartesian(
+      ylim = ylim,
+      expand = F
+    ) +
     ggtitle(data_plot$stratsection_name) +
-    theme(legend.position = "bottom",
-          legend.title = element_blank(),
-          axis.title.x = element_blank(),
-          axis.text.x.bottom = element_blank(),
-          plot.title = element_text(hjust = 0.5, color = "black", size = 12, face = "bold"),
-          plot.margin = unit(c(0.1, 1.25, 0.1, 0.1), "cm")) +
+    theme(
+      legend.position = "bottom",
+      legend.title = element_blank(),
+      axis.title.x = element_blank(),
+      axis.text.x.bottom = element_blank(),
+      plot.title = element_text(hjust = 0.5, color = "black", size = 12, face = "bold"),
+      plot.margin = unit(c(0.1, 1.25, 0.1, 0.1), "cm")
+    ) +
     guides(fill = guide_legend(nrow = 2, byrow = TRUE))
 
+  return(plot)
+}
+
+
+#' Plots SampleID lables alongside a stratigraphic section
+#'
+#' Uses ggplot2 to SampleID labels at the correct depths for their corresponding
+#' layers. Connecting lines extend to the left of the plot to point to plotted
+#' layers. It is designed to be combined with a stratigraphic section plot created by
+#' [ggstrat()] using the [patchwork::patchwork] framework for arranging multiple
+#' ggplot objects.
+#'
+#' @param df A data frame containing stratigraphic data.
+#'   Must include columns \code{stratsection_name}, \code{stratlayer_order},
+#'   \code{grainsize}, \code{depth}, and the column specified by \code{layer_fill}.
+#' @param stratsection_name Character string giving the section name to filter.
+#' @param ylim Numeric vector of length 2 giving y-axis limits (optional).
+#' @param ybreaks Number of breaks on the y-axis.
+#'
+#' @importFrom rlang .data
+#' @importFrom ggplot2 ggplot geom_rect aes scale_fill_manual scale_y_continuous
+#'   scale_x_continuous coord_cartesian ggtitle theme element_text unit guides guide_legend
+#'   element_blank geom_text geom_segment
+#'
+#' @returns A ggplot object showing SampleIDs plotted by depth in section.
+#' @export
+#'
+#' @examples
+#' # Example 1: Basic usage
+#' example_data_strat |>
+#'   add_depths() |>
+#'   ggstrat_sampleID(stratsection_name = "21LSHD02")
+#'
+#' # Example 2: Combine with a stratigraphic section plot using patchwork
+#' if (requireNamespace("patchwork", quietly = TRUE)) {
+#'   stratsection <- example_data_strat |>
+#'     add_depths() |>
+#'     ggstrat(stratsection_name = "21LSHD02")
+#'
+#'   samples <- example_data_strat |>
+#'     add_depths() |>
+#'     ggstrat_sampleID(stratsection_name = "21LSHD02")
+#'
+#'   stratsection + samples
+#' }
+#'
+ggstrat_sampleID <- function(df,
+                             stratsection_name,
+                             ylim = NULL,
+                             ybreaks = 7) {
+  # First, filter data to the station you want to plot
+  data_plot <- df |>
+    dplyr::filter({{ stratsection_name }} == stratsection_name)
+  # Second, filter a data frame with only samples to plot
+  sample_plot <- data_plot |>
+    tidyr::drop_na(.data$SampleID)
+  # Now we can make the plot
+  plot <- ggplot(data = data_plot) +
+    geom_text(data = sample_plot,
+              aes(x = 0.2,
+                  y = .data[["Depth_middle"]],
+                  label = .data[["SampleID"]]),
+              size = 2, hjust = "left") +
+    geom_segment(data = sample_plot,
+                 aes(x = -5,
+                     xend = 0.1,
+                     y = .data[["Depth_middle"]]),
+                 linewidth = 0.3, alpha = 0.3) +
+    ggtitle("Sample ID") +
+    scale_y_continuous(
+      trans = "reverse",
+      n.breaks = ybreaks
+    ) +
+    coord_cartesian(
+      ylim = c(max(data_plot$Depth_bottom), min(data_plot$Depth_top)), expand = F,
+      xlim = c(0, 5),
+      clip = "off"
+    ) +
+    theme(
+      plot.title = element_text(hjust = 0.5, color = "black", size = 10, face = "bold"),
+      legend.title = element_blank(),
+      axis.title.x.bottom = element_blank(),
+      axis.text.x.bottom = element_blank(),
+      axis.title.y.left = element_blank(),
+      axis.text.y.left = element_blank(),
+      axis.line.x.bottom = element_blank(),
+      axis.ticks.x.bottom = element_blank()
+    ) +
+    guides(fill = guide_legend(nrow = 2, byrow = TRUE))
   return(plot)
 }
