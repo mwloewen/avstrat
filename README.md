@@ -5,6 +5,9 @@
 
 <!-- badges: start -->
 
+[![Codecov test
+coverage](https://codecov.io/gh/mwloewen/avstrat/graph/badge.svg)](https://app.codecov.io/gh/mwloewen/avstrat)
+[![R-CMD-check](https://github.com/mwloewen/avstrat/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/mwloewen/avstrat/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
 This package provides tools for data processing and generating

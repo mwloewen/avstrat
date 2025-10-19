@@ -17,6 +17,8 @@ knitr::opts_chunk$set(
 
 <!-- badges: start -->
 
+[![Codecov test coverage](https://codecov.io/gh/mwloewen/avstrat/graph/badge.svg)](https://app.codecov.io/gh/mwloewen/avstrat)
+[![R-CMD-check](https://github.com/mwloewen/avstrat/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/mwloewen/avstrat/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
 This package provides tools for data processing and generating stratigraphic sections for volcanic deposits and tephrastratigraphy. Package was developed for studies on Alaska volcanoes ("av") where stratigraphic ("strat") figures are needed for interpreting eruptive histories, but the methods are applicable to any sediment stratigraphy project. The primary outputs are ggplot figures of stratigrahaphic sections–`ggstrat()`, `ggstrat_column()`, `ggstrat_sampleID()`-but the data processing logic `add_depths()` and `add_layer_widths()` enable motivated users to create custom visualizations. Various load_data functions facilitate ingesting from stratigraphic layer data templates.
