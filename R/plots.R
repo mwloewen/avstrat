@@ -111,3 +111,74 @@ ggstrat <- function(df,
 
   return(plot)
 }
+
+
+#' Plot a simple stratigraphic column
+#'
+#' Uses ggplot2 to create a simple depth-only stratigraphic section plot with no
+#' variable mapped to the x-axis. Each layer is drawn as a fixed-width rectangle.
+#'
+#'
+#' @param df A data frame containing stratigraphic data.
+#'   Must include columns \code{stratsection_name}, \code{stratlayer_order},
+#'   \code{grainsize}, \code{depth}, and the column specified by \code{layer_fill}.
+#' @param stratsection_name Character string giving the section name to filter.
+#' @param ylim Numeric vector of length 2 giving y-axis limits (optional).
+#' @param ybreaks Number of breaks on the y-axis.
+#' @param layer_fill Character string naming the column to use for fill. If
+#'  using anything other than "layer_type" from the template, will need to make
+#'  a new palette.
+#' @param layer_fill_color Palette object to use for fill colors.
+#' @param layer_border_color Border color for polygons.
+#' @param layer_border_linewidth Border line width for polygons.
+#'
+#' @importFrom rlang .data
+#' @importFrom ggplot2 ggplot geom_rect aes scale_fill_manual scale_y_continuous
+#'   scale_x_continuous coord_cartesian ggtitle theme element_text unit guides guide_legend
+#'   element_blank
+#'
+#' @returns A ggplot object showing a schematic stratigraphic column.
+#' @export
+#'
+#' @examples
+#' example_data_strat |>
+#'   add_depths() |>
+#'   ggstrat_column(stratsection_name = "21LSHD02")
+ggstrat_column <- function(df,
+                           stratsection_name,
+                           ylim = NULL,
+                           ybreaks = 7,
+                           layer_fill = "layer_type",
+                           layer_fill_color = "stratpal_rpg",
+                           layer_border_color = 'black',
+                           layer_border_linewidth = 0.2
+) {
+  # First, filter data to the station you want to plot
+  data_plot <- df |>
+    dplyr::filter({{ stratsection_name }} == stratsection_name)
+
+  plot <- ggplot(data = data_plot) +
+    geom_rect(
+      aes(group = .data[["stratlayer_order"]], xmin = 0, xmax = 0.1,
+          ymin = .data[["Depth_bottom"]], ymax = .data[["Depth_top"]],
+          fill = factor(.data[[layer_fill]])), #Fix: stratlayer_order might not be defined for depth explicit template
+      color = layer_border_color,
+      linewidth = layer_border_linewidth) +
+    scale_fill_stratpal(palette = layer_fill_color) +
+    scale_x_continuous(breaks = NULL) +
+    scale_y_continuous(name = "Depth (cm)",
+                       n.breaks = ybreaks,
+                       trans = "reverse") +
+    coord_cartesian(ylim = ylim,
+                    expand = F) +
+    ggtitle(data_plot$stratsection_name) +
+    theme(legend.position = "bottom",
+          legend.title = element_blank(),
+          axis.title.x = element_blank(),
+          axis.text.x.bottom = element_blank(),
+          plot.title = element_text(hjust = 0.5, color = "black", size = 12, face = "bold"),
+          plot.margin = unit(c(0.1, 1.25, 0.1, 0.1), "cm")) +
+    guides(fill = guide_legend(nrow = 2, byrow = TRUE))
+
+  return(plot)
+}
