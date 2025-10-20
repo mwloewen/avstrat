@@ -195,9 +195,10 @@ ggstrat_column <- function(df,
 }
 
 
-#' Plots SampleID lables alongside a stratigraphic section
+#' Plots text lables alongside a stratigraphic section
 #'
-#' Uses ggplot2 to SampleID labels at the correct depths for their corresponding
+#' Uses ggplot2 to plot any character column associated with stratigraphic data
+#' such as SampleID at the correct depths for their corresponding
 #' layers. Connecting lines extend to the left of the plot to point to plotted
 #' layers. It is designed to be combined with a stratigraphic section plot created by
 #' [ggstrat()] using the [patchwork::patchwork] framework for arranging multiple
@@ -206,6 +207,7 @@ ggstrat_column <- function(df,
 #' @param df A data frame containing stratigraphic data.
 #'   Must include columns \code{stratsection_name}, \code{stratlayer_order},
 #'   \code{grainsize}, \code{depth}, and the column specified by \code{layer_fill}.
+#' @param label Character strin gnaming the column to use for labels. Default is "SampleID".
 #' @param stratsection_name Character string giving the section name to filter.
 #' @param ylim Numeric vector of length 2 giving y-axis limits (optional).
 #' @param ybreaks Number of breaks on the y-axis.
@@ -221,7 +223,8 @@ ggstrat_column <- function(df,
 #' @examples
 #' # Example 1: Basic usage
 #' example_data_strat |>
-#'   ggstrat_sampleID(stratsection_name = "21LSHD02")
+#'   ggstrat_label(stratsection_name = "21LSHD02",
+#'               label = "SampleID")
 #'
 #' # Example 2: Combine with a stratigraphic section plot using patchwork
 #' if (requireNamespace("patchwork", quietly = TRUE)) {
@@ -229,37 +232,39 @@ ggstrat_column <- function(df,
 #'     ggstrat(stratsection_name = "21LSHD02")
 #'
 #'   samples <- example_data_strat |>
-#'     ggstrat_sampleID(stratsection_name = "21LSHD02")
+#'     ggstrat_label(stratsection_name = "21LSHD02",
+#'               label = "SampleID")
 #'
 #'   stratsection + samples
 #' }
 #'
-ggstrat_sampleID <- function(df,
-                             stratsection_name,
-                             ylim = NULL,
-                             ybreaks = 7) {
+ggstrat_label <- function(df,
+                          stratsection_name,
+                          label = "SampleID",
+                          ylim = NULL,
+                          ybreaks = 7) {
   # First, filter data to the station you want to plot
   data_plot <- df |>
     dplyr::filter({{ stratsection_name }} == stratsection_name) |>
     # Add depth info
     add_depths()
   # Second, filter a data frame with only samples to plot
-  sample_plot <- data_plot |>
+  label_plot <- data_plot |>
       add_depths() |>
-    tidyr::drop_na(.data$SampleID)
+    tidyr::drop_na(label)
   # Now we can make the plot
   plot <- ggplot(data = data_plot) +
-    geom_text(data = sample_plot,
+    geom_text(data = label_plot,
               aes(x = 0.2,
                   y = .data[["Depth_middle"]],
-                  label = .data[["SampleID"]]),
+                  label = .data[[label]]),
               size = 2, hjust = "left") +
-    geom_segment(data = sample_plot,
+    geom_segment(data = label_plot,
                  aes(x = -5,
                      xend = 0.1,
                      y = .data[["Depth_middle"]]),
                  linewidth = 0.3, alpha = 0.3) +
-    ggtitle("Sample ID") +
+    ggtitle(label) +
     scale_y_continuous(
       trans = "reverse",
       n.breaks = ybreaks

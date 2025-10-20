@@ -87,7 +87,7 @@ combine them with the patchwork package.
 ``` r
 library(patchwork)
 p1 <- ggstrat(df = data_strat, stratsection_name = '21LSHD02')
-p2 <- ggstrat_sampleID(df = data_strat, stratsection_name = '21LSHD02')
+p2 <- ggstrat_label(df = data_strat, stratsection_name = '21LSHD02')
 
 p1 + p2
 ```
