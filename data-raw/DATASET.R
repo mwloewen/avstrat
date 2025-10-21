@@ -53,3 +53,9 @@ samples <- station_sample_upload |>
     .data[["ReasonforCollection"]]
   ) |>
   dplyr::filter(!is.na(.data[["SampleID"]]))
+
+
+
+#Test bulk save
+ggstrat_bulk_save(df = example_data_strat,
+                  plotfunction= ggstrat_label)

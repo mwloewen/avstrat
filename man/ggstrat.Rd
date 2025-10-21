@@ -21,7 +21,7 @@ ggstrat(
 \arguments{
 \item{df}{A data frame containing stratigraphic data.
 Must include columns \code{stratsection_name}, \code{stratlayer_order},
-\code{grainsize}, \code{depth}, and the column specified by \code{layer_fill}.}
+\code{grainsize}, \code{depth}, and \code{stratlayer_type}.}
 
 \item{stratsection_name}{Character string giving the section name to filter.}
 

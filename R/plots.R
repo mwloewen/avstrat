@@ -4,7 +4,7 @@
 #'
 #' @param df A data frame containing stratigraphic data.
 #'   Must include columns \code{stratsection_name}, \code{stratlayer_order},
-#'   \code{grainsize}, \code{depth}, and the column specified by \code{layer_fill}.
+#'   \code{grainsize}, \code{depth}, and \code{stratlayer_type}.
 #' @param stratsection_name Character string giving the section name to filter.
 #' @param grainsize_direction Character string, one of \code{"increasing"} or
 #'   \code{"decreasing"}. Controls the numeric mapping of grain sizes:
@@ -123,7 +123,7 @@ ggstrat <- function(df,
 #'
 #' @param df A data frame containing stratigraphic data.
 #'   Must include columns \code{stratsection_name}, \code{stratlayer_order},
-#'   \code{grainsize}, \code{depth}, and the column specified by \code{layer_fill}.
+#'   \code{grainsize}, \code{depth}, and \code{stratlayer_type}.
 #' @param stratsection_name Character string giving the section name to filter.
 #' @param ylim Numeric vector of length 2 giving y-axis limits (optional).
 #' @param ybreaks Number of breaks on the y-axis.
