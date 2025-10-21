@@ -39,7 +39,7 @@
 #'   scale_x_continuous coord_cartesian ggtitle theme element_text unit guides guide_legend
 #'   element_blank
 #'
-#' @returns A ggplot object
+#' @return A ggplot object
 #' @export
 #'
 #' @examples
@@ -139,7 +139,7 @@ ggstrat <- function(df,
 #'   scale_x_continuous coord_cartesian ggtitle theme element_text unit guides guide_legend
 #'   element_blank
 #'
-#' @returns A ggplot object showing a schematic stratigraphic column.
+#' @return A ggplot object showing a schematic stratigraphic column.
 #' @export
 #'
 #' @examples
@@ -217,7 +217,7 @@ ggstrat_column <- function(df,
 #'   scale_x_continuous coord_cartesian ggtitle theme element_text unit guides guide_legend
 #'   element_blank geom_text geom_segment
 #'
-#' @returns A ggplot object showing SampleIDs plotted by depth in section.
+#' @return A ggplot object showing SampleIDs plotted by depth in section.
 #' @export
 #'
 #' @examples

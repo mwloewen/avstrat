@@ -30,7 +30,7 @@
 #'   and saving all plots.
 #' @param ... Additional arguments passed on to `plotfunction`.
 #'
-#' @returns Invisibly returns `NULL`. Called for its side effect of
+#' @return Invisibly returns `NULL`. Called for its side effect of
 #'   saving plot files to disk.
 #' @export
 #'
