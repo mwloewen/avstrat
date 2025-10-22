@@ -54,7 +54,42 @@ samples <- station_sample_upload |>
   ) |>
   dplyr::filter(!is.na(.data[["SampleID"]]))
 
+# Combined plot test
+example_data_strat |>
+  ggstrat(stratsection_name = "21LSHD02",
+          use_theme = theme_avstrat())
+example_data_strat |>
+  ggstrat_column(stratsection_name = "21LSHD02",
+                 use_theme = theme_avstrat())
+example_data_strat |>
+  ggstrat_label(stratsection_name = "21LSHD02",
+                  use_theme = theme_avstrat())
+example_data_strat |>
+   ggstrat_samples(stratsection_name = "21LSHD02",
+                   use_theme = theme_avstrat())
 
+
+
+
+stratplot <- example_data_strat |>
+  ggstrat(stratsection_name = "21LSHD02",
+          use_theme = theme_bw())
+stratplot
+
+library(ggplot2)
+theme_set(theme_classic())
+example_data_strat |>
+  ggstrat_label(stratsection_name = "21LSHD02") # works
+
+
+example_data_strat |>
+  ggstrat_label(stratsection_name = "21LSHD02") + theme_avstrat() # overrides critical plot elements
+
+
+library(patchwork)
+stratplot + labelplot +
+  plot_layout(guides='collect') &
+  theme(legend.position='bottom')
 
 #Test bulk save
 ggstrat_bulk_save(df = example_data_strat,

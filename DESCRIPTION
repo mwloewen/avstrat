@@ -17,12 +17,12 @@ Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.3
 Imports: 
     dplyr,
-    ggplot2,
     tidyr,
+    ggplot2,
     grid,
+    patchwork,
     rlang
 Suggests:
-    patchwork,
     readxl,
     testthat (>= 3.0.0),
     tibble

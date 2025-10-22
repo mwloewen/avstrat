@@ -9,6 +9,7 @@ ggstrat(
   stratsection_name,
   grainsize_direction = c("increasing", "decreasing"),
   grainsize_labs = gs_volc_abbr,
+  use_theme = NULL,
   xlim = c(-1, 10),
   ylim = NULL,
   ybreaks = 7,
@@ -44,6 +45,8 @@ which may better match observed erosional profiles.}
 \item \code{gs_sed_names}: Sedimentary grainsize full names.
 \item \code{gs_numeric}: Numeric grainsize labels.
 }}
+
+\item{use_theme}{A ggplot2 theme object to apply to the plot, e.g., "theme_avstrat".}
 
 \item{xlim}{Numeric vector of length 2 giving x-axis limits.}
 

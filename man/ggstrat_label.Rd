@@ -7,6 +7,7 @@
 ggstrat_label(
   df,
   stratsection_name,
+  use_theme = NULL,
   label = "SampleID",
   ylim = NULL,
   ybreaks = 7
@@ -18,6 +19,8 @@ Must include columns \code{stratsection_name}, \code{stratlayer_order},
 \code{grainsize}, \code{depth}, and the column specified by \code{layer_fill}.}
 
 \item{stratsection_name}{Character string giving the section name to filter.}
+
+\item{use_theme}{A ggplot2 theme object to apply to the plot, e.g., "theme_avstrat".}
 
 \item{label}{Character strin gnaming the column to use for labels. Default is "SampleID".}
 

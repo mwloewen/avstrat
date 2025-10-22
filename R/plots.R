@@ -24,6 +24,7 @@
 #'    \item \code{gs_sed_names}: Sedimentary grainsize full names.
 #'    \item \code{gs_numeric}: Numeric grainsize labels.
 #'  }
+#' @param use_theme A ggplot2 theme object to apply to the plot, e.g., "theme_avstrat".
 #' @param xlim Numeric vector of length 2 giving x-axis limits.
 #' @param ylim Numeric vector of length 2 giving y-axis limits (optional).
 #' @param ybreaks Number of breaks on the y-axis.
@@ -50,6 +51,7 @@ ggstrat <- function(df,
                     stratsection_name,
                     grainsize_direction = c("increasing", "decreasing"),
                     grainsize_labs = gs_volc_abbr,
+                    use_theme = NULL,
                     xlim = c(-1, 10),
                     ylim = NULL,
                     ybreaks = 7,
@@ -104,6 +106,7 @@ ggstrat <- function(df,
                     ylim = ylim,
                     expand = F) +
     ggtitle(stratsection_name) +
+    use_theme +
     theme(legend.position = "bottom",
           legend.title = element_blank(),
           axis.title.x = element_text(hjust = 0.5),
@@ -125,6 +128,7 @@ ggstrat <- function(df,
 #'   Must include columns \code{stratsection_name}, \code{stratlayer_order},
 #'   \code{grainsize}, \code{depth}, and \code{stratlayer_type}.
 #' @param stratsection_name Character string giving the section name to filter.
+#' @param use_theme A ggplot2 theme object to apply to the plot, e.g., "theme_avstrat".
 #' @param ylim Numeric vector of length 2 giving y-axis limits (optional).
 #' @param ybreaks Number of breaks on the y-axis.
 #' @param layer_fill Character string naming the column to use for fill. If
@@ -147,6 +151,7 @@ ggstrat <- function(df,
 #'   ggstrat_column(stratsection_name = "21LSHD02")
 ggstrat_column <- function(df,
                            stratsection_name,
+                           use_theme = NULL,
                            ylim = NULL,
                            ybreaks = 7,
                            layer_fill = "layer_type",
@@ -181,6 +186,7 @@ ggstrat_column <- function(df,
       expand = F
     ) +
     ggtitle(data_plot$stratsection_name) +
+    use_theme +
     theme(
       legend.position = "bottom",
       legend.title = element_blank(),
@@ -208,6 +214,7 @@ ggstrat_column <- function(df,
 #'   Must include columns \code{stratsection_name}, \code{stratlayer_order},
 #'   \code{grainsize}, \code{depth}, and the column specified by \code{layer_fill}.
 #' @param label Character strin gnaming the column to use for labels. Default is "SampleID".
+#' @param use_theme A ggplot2 theme object to apply to the plot, e.g., "theme_avstrat".
 #' @param stratsection_name Character string giving the section name to filter.
 #' @param ylim Numeric vector of length 2 giving y-axis limits (optional).
 #' @param ybreaks Number of breaks on the y-axis.
@@ -240,6 +247,7 @@ ggstrat_column <- function(df,
 #'
 ggstrat_label <- function(df,
                           stratsection_name,
+                          use_theme = NULL,
                           label = "SampleID",
                           ylim = NULL,
                           ybreaks = 7) {
@@ -274,6 +282,7 @@ ggstrat_label <- function(df,
       xlim = c(0, 5),
       clip = "off"
     ) +
+    use_theme +
     theme(
       plot.title = element_text(hjust = 0.5, color = "black", size = 10, face = "bold"),
       legend.title = element_blank(),
@@ -287,3 +296,54 @@ ggstrat_label <- function(df,
     guides(fill = guide_legend(nrow = 2, byrow = TRUE))
   return(plot)
 }
+
+
+#' A combined grainsize-depth and sample label stratigraphic plot
+#'
+#' Combines a grainsize–depth plot and sample label plot into a single
+#' composite figure using the [patchwork] framework. The two plots are aligned
+#' and legends are collected at the bottom.
+#'
+#' @param df A data frame containing stratigraphic data.
+#'   Must include columns \code{stratsection_name}, \code{stratlayer_order},
+#'   \code{grainsize}, \code{depth}, \code{stratlayer_type}, and \code{SampleID}.
+#' @param stratsection_name Character string giving the section name to filter.
+#' @param use_theme A ggplot2 theme object to apply to the plot, e.g., "theme_avstrat".
+#' @param ylim Numeric vector of length 2 giving y-axis limits (optional).
+#' @param ybreaks Number of breaks on the y-axis.
+#'
+#' @return A patchwork/ggplot object combining the stratigraphic plot
+#'   and sample labels. This object can be further modified with
+#'   [ggplot2::theme()] or additional patchwork operators.
+#'
+#' @importFrom rlang enquo
+#' @importFrom rlang !!
+
+#' @export
+#'
+#' @examples
+#' example_data_strat |>
+#'   ggstrat_samples(stratsection_name = "21LSHD02")
+ggstrat_samples <- function(df,
+                            stratsection_name,
+                            use_theme = NULL,
+                            ylim = NULL,
+                            ybreaks = 7) {
+    # Grainsize-depth plot
+    stratplot <- ggstrat(df = df,
+                         stratsection_name = {{ stratsection_name }},
+                         use_theme = use_theme,
+                         ybreaks = ybreaks,
+                         ylim = ylim)
+      ggplot2::theme(plot.margin = grid::unit(c(0.1, 0.1, 0.1, 0.1), "cm"))
+    # Sample labels
+    sampleplot <- ggstrat_label(df = df,
+                                stratsection_name = {{ stratsection_name }},
+                                use_theme = use_theme,
+                                ybreaks = ybreaks,
+                                ylim = ylim)
+     ggplot2::theme(plot.margin = grid::unit(c(0.1, 1.5, 0.1, 0.1), "cm"))
+    # Patchwork stuff
+     patchwork::wrap_plots(stratplot, sampleplot, ncol = 2, guides = "collect") +
+       patchwork::plot_annotation(theme = ggplot2::theme(legend.position = "bottom"))
+  }

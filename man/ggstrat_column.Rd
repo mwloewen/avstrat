@@ -7,6 +7,7 @@
 ggstrat_column(
   df,
   stratsection_name,
+  use_theme = NULL,
   ylim = NULL,
   ybreaks = 7,
   layer_fill = "layer_type",
@@ -21,6 +22,8 @@ Must include columns \code{stratsection_name}, \code{stratlayer_order},
 \code{grainsize}, \code{depth}, and \code{stratlayer_type}.}
 
 \item{stratsection_name}{Character string giving the section name to filter.}
+
+\item{use_theme}{A ggplot2 theme object to apply to the plot, e.g., "theme_avstrat".}
 
 \item{ylim}{Numeric vector of length 2 giving y-axis limits (optional).}
 
