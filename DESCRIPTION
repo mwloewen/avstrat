@@ -21,7 +21,9 @@ Imports:
     ggplot2,
     grid,
     patchwork,
-    rlang
+    rlang,
+    shiny,
+    leaflet
 Suggests:
     readxl,
     testthat (>= 3.0.0),
