@@ -71,7 +71,7 @@ theme_set(theme_avstrat())
 ggstrat(df = data_strat, stratsection_name = '21LSHD02')
 ```
 
-<img src="man/figures/README-example_basic_grainsize_plot-1.png" width="100%" />
+<img src="man/figures/README-example_basic_grainsize_plot-1.png" width="31%" />
 
 The default `ggstrat()` plot emphasizes coarser grained deposits as
 larger bars, useful for recognizing significant tephra deposits. Many
@@ -85,7 +85,7 @@ less prone to erosion.
 ggstrat(df = data_strat, stratsection_name = '21LSHD02', grainsize_direction = "decreasing")
 ```
 
-<img src="man/figures/README-example_reverse_grainsize_plot-1.png" width="100%" />
+<img src="man/figures/README-example_reverse_grainsize_plot-1.png" width="31%" />
 
 You can also plot sample identification along side the section. and
 combine them with the patchwork package.
@@ -98,7 +98,12 @@ p2 <- ggstrat_label(df = data_strat, stratsection_name = '21LSHD02')
 p1 + p2
 ```
 
-<img src="man/figures/README-example_combined_sample_plot-1.png" width="100%" />
+<img src="man/figures/README-example_combined_sample_plot-1.png" width="62.5%" />
 
 More examples and demonstration of how to create your own custom plots
-will be provided \[eventually\] in vignettes!
+will be provided \[eventually\] in vignettes! Currently, a more detailed
+workflow can be accessed with the intalled package at:
+
+``` r
+vignette("avstrat-workflow-examples", package = "avstrat")
+```
