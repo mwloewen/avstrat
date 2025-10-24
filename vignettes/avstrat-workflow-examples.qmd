@@ -1,0 +1,193 @@
+---
+title: "avstrat-workflow-examples"
+output: quarto::html
+vignette: >
+  %\VignetteIndexEntry{avstrat-workflow-examples}
+  %\VignetteEngine{quarto::html}
+  %\VignetteEncoding{UTF-8}
+knitr:
+  opts_chunk:
+    collapse: true
+    comment: '#>'
+---
+
+# Workflow examples for avstrat
+
+This vignette walks through a typical workflow for using the avstrat package. You can copy this vignette to your own project folder and to setup running your own data!
+
+## Setup
+
+To start, you'll need to install any packages that you want to use. This needs to only be run once, or again to get the latest package updates.
+
+```{r}
+#| eval: false
+#| label: setup installation
+
+install.packages("avstrat") # this will only work once it is on CRAN
+install.packages("tidyverse") # you want all of these even if you don't have them yet
+install.packages("readxl")
+```
+
+You might need other packages. If using RStudio, it will usually alert you to any packages you don't have installed at the top.
+
+Every time you load R you'll want to load the avstrat package, for this vignette, I also suggest loading a few others.
+
+```{r}
+#| label: setup
+library(readxl)
+library(ggplot2)
+library(patchwork)
+library(avstrat)
+```
+
+I also suggest overriding the default `ggplot2` theme (because it's ugly), and provide a theme that works well with this package's figures, but you can use any theme you like.
+
+```{r}
+theme_set(theme_avstrat())
+```
+
+```{r}
+#| include: false
+
+# Hidden, because this is just to find the packages files
+# Locate the example Excel files shipped with the package
+path_samples <- system.file("extdata", "example_samples_stations_upload_2024.xlsx",
+                            package = "avstrat"
+)
+path_layers <- system.file("extdata", "example_layers_upload_2024.xlsx",
+                           package = "avstrat"
+)
+```
+
+## Data import
+
+The first step is to bring stratigraphy data into the coding environment. The data entry currently takes the layer and station-sample GeoDIVA upload templates. These templates provide strict data validation fields that help ensure your data are comparable with plotting and database submission.
+
+To copy the example templates into your working directory:
+
+```{r}
+#| eval: false
+
+file.copy(path_samples, "example_samples_stations_upload_2024.xlsx")
+file.copy(path_layers, "example_layers_upload_2024.xlsx")
+```
+
+I suggest putting these in a "data" folder in your project, similar to an R package structure. Now, you can read these files into the environment with `readxl::read_xlsx()`.
+
+```{r}
+station_sample_upload <- readxl::read_xlsx(path_samples, sheet = "Data")
+layer_upload <- readxl::read_xlsx(path_layers, sheet = "Data")
+```
+
+Now these files need to be combined into a uglier but ready for `avstrat` format.
+
+```{r}
+mydata <- load_geodiva_forms(station_sample_upload = station_sample_upload,
+                             layer_upload = layer_upload)
+```
+
+You can see you successfully loaded 9 example sections that come with the package.
+
+## Basic plotting
+
+You can make a simple grainsize-depth section with either increasing or decreasing grainsize on the x-axis. You can also make a simple column with no grainsize data.
+
+```{r}
+#| fig-width: 9
+#| fig-height: 6
+
+grainsize_increasing <- ggstrat(df = mydata, 
+                                stratsection_name = "21LSHD02")
+grainsize_decreasing <- ggstrat(df = mydata, 
+                                stratsection_name = "21LSHD02", 
+                                grainsize_direction = "decreasing")
+grainsize_column <- ggstrat_column(df = mydata, 
+                                stratsection_name = "21LSHD02")
+grainsize_increasing + grainsize_decreasing + grainsize_column
+```
+
+The `ggstrat()` function also let's you choose different labels for the x-axis with `grainsize_labs`, zoom in on part of the section manually with `ylim`, use a different color palette for the layers with `layer_fill_color`, map the layer color to a different categorical value (although you'll need to supply a new fill palette) with `layer_fill`, as well as other options. Below you can see the utility of the `ylim` option for seeing an area of small layers.
+
+```{r}
+#| fig-width: 6
+#| fig-height: 6
+
+focused_section <- ggstrat(df = mydata, 
+                                stratsection_name = "21LSHD02", 
+                                ylim = c(160,200))
+grainsize_increasing + focused_section
+```
+
+Adding labels to the layers is often desired, but usually alongside one of the section visualizations from above. We can do this with `ggstrat_label()`, with default mapping to "SampleID", but any variable can be mapped to this. As in the examples above, `patchwork` provides a nice interface to combine plots.
+
+```{r}
+#| fig-width: 6
+#| fig-height: 6
+
+sample_label <- ggstrat_label(df = mydata, 
+                                stratsection_name = "21LSHD02")
+grainsize_increasing + sample_label
+```
+
+## Interactive app
+
+For most projects, you might want to explore your sections spatially a map. `avstrat` has a interactivey Shiny app that let's you do this. The map is genearted with the `leaflet` package, and when you click on a station, it will display the strat section on the right. Be sure to close the app popup window before coming back to this notebook!
+
+```{r}
+#| eval: false
+
+run_ggstrat_app(df = mydata)
+```
+
+The app defaults to a combined ggstrat() + ggstrat_label() plot showing SampleID, but you can supply any plot function, including a custom function of your own design! Here is an example.
+
+```{r}
+#| eval: false
+
+mystratplot <- function(df, 
+                        stratsection_name) {
+  ggstrat(df = df, stratsection_name = {{ stratsection_name }}) +
+    theme(plot.margin = unit(c(0.1, 0.1, 0.1, 0.1), "cm")) +
+  ggstrat_label(df = df, stratsection_name = {{ stratsection_name }}, 
+                               label = "SampleID") +
+    theme(plot.margin = unit(c(0.1, 1.5, 0.1, 0.1), "cm")) +
+  ggstrat_label(df = df, stratsection_name = {{ stratsection_name }}, 
+                                label = "volcano_name") +
+    theme(plot.margin = unit(c(0.1, 0.5, 0.1, 0.1), "cm")) +
+    plot_layout(guides='collect') & theme(legend.position='bottom')
+}
+
+run_ggstrat_app(df = mydata, plot = mystratplot)
+```
+
+## Saving plots
+
+Individual plots can be saved with `ggsave()`, which allows you to define the plot size, the filetype (e.g., png of pdf), and resolution.
+
+```{r}
+#| eval: false
+
+ggsave(plot = grainsize_increasing, 
+       filename = "mytestsection.png",
+       width = 3,
+       height = 6,
+       units = "in",
+       dpi = 300)
+```
+
+More likely, once you have a plot you're happy with, you'll want to save all your plots at once, and there is a handy helper function for that. It will save these by default in a folder StratSectionsPlotted. Note, you will need to go to the Console and select "Y" after you run this function, to make sure you don't accidentally run it for some dataset of thousands of sections.
+
+```{r}
+#| eval: false
+
+ggstrat_bulk_save(df = mydata,
+                  plotfunction = ggstrat_samples,
+                  file_type = ".png",
+                  width = 6,
+                  height = 6,
+                  units = "in")
+```
+
+## Conclusions
+
+Hopefully this provides a basic workflow that will help you with your own project! The plotting functions internally run some data processing functions, specifically `add_depths()` which standardizes the depth data for plotting, and `add_layer_width()` which takes grainsize observations and prepares them for making the polygons of `ggstrat()`. You can use these to make your own custom plots. If your plots seem widely useful, please pass them on so we can incorporate them into this package!

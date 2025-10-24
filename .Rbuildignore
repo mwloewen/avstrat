@@ -4,3 +4,5 @@
 ^\.github$
 ^README\.Rmd$
 ^data-raw$
+^vignettes/\.quarto$
+^vignettes/*_files$
