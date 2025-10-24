@@ -6,6 +6,8 @@
 <!-- badges: start -->
 
 [![R-CMD-check](https://github.com/mwloewen/avstrat/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/mwloewen/avstrat/actions/workflows/R-CMD-check.yaml)
+[![Codecov test
+coverage](https://codecov.io/gh/mwloewen/avstrat/graph/badge.svg)](https://app.codecov.io/gh/mwloewen/avstrat)
 
 <!-- badges: end -->
 
@@ -41,8 +43,8 @@ To upload data from Geodiva submission templates (Stations-Samples and
 Layers):
 
 ``` r
-library(avstrat)
 library(readxl)
+library(avstrat)
 
 data_strat <- load_geodiva_forms(
    station_sample_upload = 
@@ -53,13 +55,17 @@ data_strat <- load_geodiva_forms(
 ```
 
 Once you have the data in your environment, you can make a basic
-stratigraphic plot:
+stratigraphic plot and use the avstrat theme:
 
 ``` r
-library(avstrat)
+library(ggplot2)
 library(readxl)
+library(avstrat)
 # Load data
 data_strat <- example_data_strat
+
+# Set theme
+theme_set(theme_avstrat())
 
 # Produce a strat section
 ggstrat(df = data_strat, stratsection_name = '21LSHD02')

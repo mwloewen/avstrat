@@ -17,7 +17,7 @@ knitr::opts_chunk$set(
 
 <!-- badges: start -->
 
-[![R-CMD-check](https://github.com/mwloewen/avstrat/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/mwloewen/avstrat/actions/workflows/R-CMD-check.yaml)
+[![R-CMD-check](https://github.com/mwloewen/avstrat/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/mwloewen/avstrat/actions/workflows/R-CMD-check.yaml) [![Codecov test coverage](https://codecov.io/gh/mwloewen/avstrat/graph/badge.svg)](https://app.codecov.io/gh/mwloewen/avstrat)
 
 <!-- badges: end -->
 
@@ -39,8 +39,8 @@ This currently does not work universally, since the repo is currently private. I
 To upload data from Geodiva submission templates (Stations-Samples and Layers):
 
 ```{r example_import_data, eval=FALSE}
-library(avstrat)
 library(readxl)
+library(avstrat)
 
 data_strat <- load_geodiva_forms(
    station_sample_upload = 
@@ -50,13 +50,17 @@ data_strat <- load_geodiva_forms(
  )
 ```
 
-Once you have the data in your environment, you can make a basic stratigraphic plot:
+Once you have the data in your environment, you can make a basic stratigraphic plot and use the avstrat theme:
 
-```{r example_basic_grainsize_plot}
-library(avstrat)
+```{r example_basic_grainsize_plot, fig.width=2.5, fig.height=5}
+library(ggplot2)
 library(readxl)
+library(avstrat)
 # Load data
 data_strat <- example_data_strat
+
+# Set theme
+theme_set(theme_avstrat())
 
 # Produce a strat section
 ggstrat(df = data_strat, stratsection_name = '21LSHD02')
@@ -64,13 +68,13 @@ ggstrat(df = data_strat, stratsection_name = '21LSHD02')
 
 The default `ggstrat()` plot emphasizes coarser grained deposits as larger bars, useful for recognizing significant tephra deposits. Many prefer stratigraphic profiles to reflect the erosional profile of an outcrop. This would be best achieved by recording a "erodability" metric in the field, but a rough version of this is to plot the fine-grained layers as thicker than coarse grained layers, as these typically are less prone to erosion.
 
-```{r example_reverse_grainsize_plot}
+```{r example_reverse_grainsize_plot, fig.width=2.5, fig.height=5}
 ggstrat(df = data_strat, stratsection_name = '21LSHD02', grainsize_direction = "decreasing")
 ```
 
 You can also plot sample identification along side the section. and combine them with the patchwork package.
 
-```{r example_combined_sample_plot}
+```{r example_combined_sample_plot, fig.width=5, fig.height=6}
 library(patchwork)
 p1 <- ggstrat(df = data_strat, stratsection_name = '21LSHD02')
 p2 <- ggstrat_label(df = data_strat, stratsection_name = '21LSHD02')
