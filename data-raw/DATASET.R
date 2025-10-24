@@ -98,3 +98,39 @@ ggstrat_bulk_save(df = example_data_strat,
 
 # testing app
 run_ggstrat_app(example_data_strat)
+
+
+### Check new add depth
+library(readxl)
+
+# Locate the example Excel files shipped with the package
+path_samples <- system.file("extdata", "example_samples_stations_upload_2024.xlsx",
+                            package = "avstrat"
+)
+path_layers <- system.file("extdata", "example_layers_upload_2024.xlsx",
+                           package = "avstrat"
+)
+
+# Read them with readxl (only if readxl is available)
+if (requireNamespace("readxl", quietly = TRUE)) {
+  station_sample_upload <- readxl::read_xlsx(path_samples, sheet = "Data")
+  layer_upload <- readxl::read_xlsx(path_layers, sheet = "Data")
+
+  result <- load_geodiva_forms(station_sample_upload, layer_upload)
+  head(result)  # result is a data frame
+}
+
+
+result_depths <- result |>
+  add_depths()
+
+result |>
+  ggstrat(stratsection_name = "fake2")
+library(ggplot2)
+theme_set(theme_avstrat())
+result |>
+  ggstrat_bulk_save(plotfunction = ggstrat_samples)
+
+
+result |>
+  run_ggstrat_app()

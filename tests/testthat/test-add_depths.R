@@ -10,7 +10,10 @@ test_that("add_depths computes correct maximum depths for known sections", {
     "21DVML05"   = 100,
     "21DVML04"   = 1757,
     "21DVML08"   = 2701.5,
-    "21LSHD02"   = 285.3
+    "21LSHD02"   = 285.3,
+    "fake1"      = 84,
+    "fake2"      = 84,
+    "fake3"      = 84
   )
 
   # Compute actual max Depth_bottom per section

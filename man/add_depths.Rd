@@ -7,17 +7,22 @@
 add_depths(df)
 }
 \arguments{
-\item{df}{A data frame containing stratigraphic layer information. Expected
-columns include:
+\item{df}{A data frame containing stratigraphic layer information. The
+function works with two types of data input. If \code{stratlayermethod} is
+"order and thickness", expected columns include:
 \itemize{
 \item \code{stratlayer_order_start_at_top} Logical or numeric indicator
 of whether ordering starts at the top.
 \item \code{thickness_units}, \code{thickness_typical},
 \code{thickness_min}, \code{thickness_max} Thickness information.
+\item \code{stratsection_name}, \code{stratlayer_order} Identifiers for
+sections and the relative order of each layer.
+}
+If \code{stratlayermethod} is "start and stop depth", expected columns
+include:
+\itemize{
 \item \code{depth_units}, \code{depth_top}, \code{depth_bottom} Absolute
-depth information, not currently used.
-\item \code{stratsection_name}, \code{stratlayer_name} Identifiers for
-sections and layers.
+depth information.
 }
 Missing columns are added automatically and filled with \code{NA}.}
 }
@@ -43,8 +48,8 @@ calculates standardized thickness and depth values. It ensures required
 columns are present, converts thickness and depth units to centimeters,
 derives a plotting thickness, and computes top, bottom, and middle depths
 for each layer within a stratigraphic section. The function is designed to
-handle input where layers are defined either by thickness. The function is
-not currently configured to work with absolute depth values.
+handle input where layers are defined either by thickness or with  absolute
+start and stop depth values.
 }
 \details{
 The function groups data by \code{stratsection_name} and orders layers

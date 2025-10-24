@@ -259,7 +259,7 @@ ggstrat_label <- function(df,
   # Second, filter a data frame with only samples to plot
   label_plot <- data_plot |>
       add_depths() |>
-    tidyr::drop_na(label)
+    tidyr::drop_na(dplyr::all_of(label))
   # Now we can make the plot
   plot <- ggplot(data = data_plot) +
     geom_text(data = label_plot,

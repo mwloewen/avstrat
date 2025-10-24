@@ -44,11 +44,7 @@ load_geodiva_forms <- function(station_sample_upload,
   # Get a clean station list
   stations <- station_sample_upload |>
     dplyr::select(
-      .data[["StationID"]],
-      .data[["Latdd"]],
-      .data[["Longdd"]],
-      .data[["Date"]],
-      .data[["LocationDesc"]]
+      dplyr::all_of(c("StationID", "Latdd", "Longdd", "Date", "LocationDesc"))
     ) |>
     dplyr::filter(!is.na(.data[["StationID"]])) |>
     dplyr::group_by(.data[["StationID"]]) |>
@@ -70,16 +66,17 @@ load_geodiva_forms <- function(station_sample_upload,
       },
       .groups = "drop"
     )
-
   # Get a clean section list
   sections <- layer_upload |>
     dplyr::select(
-      .data[["stratsection_name"]],
-      .data[["station_id"]],
-      .data[["stratmeasuremethod"]],
-      .data[["stratlayer_order_start_at_top"]],
-      .data[["section_notes"]]
-    ) |>
+      dplyr::all_of(c(
+        "stratsection_name",
+        "station_id",
+        "stratmeasuremethod",
+        "stratlayer_order_start_at_top",
+        "section_notes"
+      ))
+      ) |>
     dplyr::filter(!is.na(.data[["stratsection_name"]])) |>
     dplyr::group_by(.data[["stratsection_name"]]) |>
     dplyr::summarise(
@@ -109,10 +106,12 @@ load_geodiva_forms <- function(station_sample_upload,
   # Create a clean layer list
   layers <- layer_upload |>
     dplyr::select(
-      -.data[["station_id"]],
-      -.data[["stratmeasuremethod"]],
-      -.data[["stratlayer_order_start_at_top"]],
-      -.data[["section_notes"]]
+      -dplyr::all_of(c(
+        "station_id",
+        "stratmeasuremethod",
+        "stratlayer_order_start_at_top",
+        "section_notes"
+      ))
     ) |>
     dplyr::filter(!is.na(.data[["stratlayer_order"]]))
 
@@ -120,8 +119,8 @@ load_geodiva_forms <- function(station_sample_upload,
   data_strat <- layers |>
     dplyr::left_join(sections, by = "stratsection_name") |>
     dplyr::left_join(stations, by = c("station_id" = "StationID")) |>
-    dplyr::rename(StationID = .data[["station_id"]]) |>
-    dplyr::rename(SampleID = .data[["stratlayer_sample"]])
+    dplyr::rename(StationID = dplyr::all_of("station_id")) |>
+    dplyr::rename(SampleID = dplyr::all_of("stratlayer_sample"))
 
   # Print the section list
   SectionList <- sort(unique(data_strat[["stratsection_name"]]))
