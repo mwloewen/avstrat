@@ -16,8 +16,8 @@
 #' @param outdir Directory where plots will be saved. Defaults to a folder within
 #'   the current working director named `"StratSectionsPlotted"`, created if it
 #'   does not exist.
-#' @param file_type File extension for saved plots (e.g. `".png"`,
-#'   `".pdf"`). Defaults to `".png"`.
+#' @param file_type File extension for saved plots (e.g. `"png"`,
+#'   `"pdf"`). Defaults to `"png"`.
 #' @param dpi Plot resolution in dots per inch. Can be a numeric value
 #'   (e.g. `300`) or one of `"screen"`, `"print"`, or `"retina"`.
 #'   Defaults to `300`.
@@ -51,7 +51,7 @@
 ggstrat_bulk_save <- function(df,
                               plotfunction = ggstrat,
                               outdir = "StratSectionsPlotted",
-                              file_type = ".png",
+                              file_type = "png",
                               dpi = 300,
                               width = 4,
                               height = 8,
@@ -89,7 +89,8 @@ ggstrat_bulk_save <- function(df,
 
     # Save the plot
     ggplot2::ggsave(
-      filename = paste0(i, file_type),
+      filename = paste0(i, ".", file_type),
+      device = file_type,
       plot = p,
       path = outdir,
       dpi = dpi,

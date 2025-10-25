@@ -28,8 +28,14 @@ You can install the development version of avstrat from
 [GitHub](https://github.com/) with:
 
 ``` r
-# install.packages("pak")
-pak::pak("mwloewen/avstrat")
+{r eval=FALSE}
+# install.packages("avstrat") # this will only work once it is on CRAN
+
+# Option 1: Run this if you have a downloaded source file for the package:
+install.packages("path/to/avstrat_0.0.0.9000.tar.gz", repos = NULL, type = "source")
+
+# Option 2: Run this if I've added you as a collaborator on GitHub and you have Git and GitHub setup on your system:
+remotes::install_github("mwloewen/avstrat", build_vignettes = TRUE)
 ```
 
 This currently does not work universally, since the repo is currently

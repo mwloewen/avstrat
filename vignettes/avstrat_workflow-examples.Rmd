@@ -23,8 +23,15 @@ This vignette walks through a typical workflow for using the avstrat package. Yo
 To start, you'll need to install any packages that you want to use. This needs to only be run once, or again to get the latest package updates.
 
 ```{r setup installation, eval=FALSE}
-install.packages("avstrat") # this will only work once it is on CRAN
-install.packages("tidyverse") # you want all of these even if you don't have them yet
+#install.packages("avstrat") # this will only work once it is on CRAN
+# Run this if you have a downloaded source file for the package:
+install.packages("path/to/avstrat_0.0.0.9000.tar.gz", repos = NULL, type = "source")
+
+# Run this if I've added you as a collaborator on GitHub and you have Git and GitHub setup on your system:
+remotes::install_github("mwloewen/avstrat", build_vignettes = TRUE)
+
+# Other packages you'll want intstalled if you don't have them already
+install.packages("tidyverse")
 install.packages("readxl")
 ```
 
@@ -151,7 +158,7 @@ More likely, once you have a plot you're happy with, you'll want to save all you
 ```{r bulk-save, eval=FALSE}
 ggstrat_bulk_save(df = mydata,
                   plotfunction = ggstrat_samples,
-                  file_type = ".png",
+                  file_type = "png",
                   width = 6,
                   height = 6,
                   units = "in")

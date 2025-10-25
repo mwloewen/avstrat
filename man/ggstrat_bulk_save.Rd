@@ -8,7 +8,7 @@ ggstrat_bulk_save(
   df,
   plotfunction = ggstrat,
   outdir = "StratSectionsPlotted",
-  file_type = ".png",
+  file_type = "png",
   dpi = 300,
   width = 4,
   height = 8,
@@ -32,8 +32,8 @@ Defaults to \code{\link[=ggstrat]{ggstrat()}}.}
 the current working director named \code{"StratSectionsPlotted"}, created if it
 does not exist.}
 
-\item{file_type}{File extension for saved plots (e.g. \code{".png"},
-\code{".pdf"}). Defaults to \code{".png"}.}
+\item{file_type}{File extension for saved plots (e.g. \code{"png"},
+\code{"pdf"}). Defaults to \code{"png"}.}
 
 \item{dpi}{Plot resolution in dots per inch. Can be a numeric value
 (e.g. \code{300}) or one of \code{"screen"}, \code{"print"}, or \code{"retina"}.
