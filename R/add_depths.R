@@ -1,71 +1,103 @@
 #' Add standardized depth information to stratigraphic layer data
 #'
-#' This function takes a data frame of stratigraphic layer information and
-#' calculates standardized thickness and depth values. It ensures required
-#' columns are present, converts thickness and depth units to centimeters,
-#' derives a plotting thickness, and computes top, bottom, and middle depths
-#' for each layer within a stratigraphic section. The function is designed to
-#' handle input where layers are defined either by thickness or with  absolute
-#' start and stop depth values.
+#' `add_depths()` takes a data frame of stratigraphic layer information and
+#'  calculates standardized thickness and depth values. It ensures required
+#'  columns are present, converts thickness and depth units to centimeters,
+#'  derives a plotting thickness, and computes top, bottom, and middle depths
+#'  for each layer within a stratigraphic section. The function is designed to
+#'  handle input where layers are defined either by order and thickness or with
+#'  absolute start and stop depth values.
 #'
 #' @param df A data frame containing stratigraphic layer information. The
-#'  function works with two types of data input. If \code{stratlayermethod} is
-#'  "order and thickness", expected columns include:
-#'   \itemize{
-#'     \item \code{stratlayer_order_start_at_top} Logical or numeric indicator
-#'       of whether ordering starts at the top.
-#'     \item \code{thickness_units}, \code{thickness_typical},
-#'       \code{thickness_min}, \code{thickness_max} Thickness information.
-#'     \item \code{stratsection_name}, \code{stratlayer_order} Identifiers for
-#'       sections and the relative order of each layer.
-#'   }
-#'  If \code{stratlayermethod} is "start and stop depth", expected columns
-#'  include:
-#'  \itemize{
-#'    \item \code{depth_units}, \code{depth_top}, \code{depth_bottom} Absolute
-#'       depth information.
-#'    }
-#'   Missing columns are added automatically and filled with \code{NA}.
+#'   following columns are required depending on the method:
 #'
-#' @importFrom rlang .data
+#'   **Always required**
+#'   - `stratsection_name`: Unique identity of the section (repeated for each layer).
+#'   - `stratlayer_name`: Unique identity of the layer.
+#'   - `stratmeasuremethod`: One of `"order and thickness"` or `"start and stop depth"`.
 #'
-#' @return A tibble with the original data plus additional columns:
-#'   \itemize{
-#'     \item \code{thickness_defining_cm}, \code{thickness_min_cm},
-#'       \code{thickness_max_cm}: thickness values converted to centimeters.
-#'     \item \code{depth_top_cm}, \code{depth_bottom_cm}: depth values converted
-#'       to centimeters.
-#'     \item \code{thickness_plot}: a single representative thickness for
-#'       plotting, derived from available thickness information.
-#'     \item \code{thickness_plot_warning}: warning message if no thickness was
-#'       available.
-#'     \item \code{Depth_top}, \code{Depth_bottom}, \code{Depth_middle}:
-#'       calculated depths (cm) for each layer.
-#'   }
+#'   **If `stratmeasuremethod == "order and thickness"`**
+#'   - `stratlayer_order_start_at_top`: Logical, does ordering start at the top (`TRUE`) or bottom (`FALSE`)?
+#'   - `stratlayer_order`: Integer order of layers within the section.
+#'   - `thickness_units`: One of `"meters"`, `"centimeters"`, `"millimeters"`.
+#'   - At least one of `thickness_typical`, `thickness_min`, or `thickness_max`.
+#'
+#'   **If `stratmeasuremethod == "start and stop depth"`**
+#'   - `depth_units`: One of `"meters"`, `"centimeters"`, `"millimeters"`.
+#'   - `depth_top`: Absolute depth of the top of the layer.
+#'   - `depth_bottom`: Absolute depth of the bottom of the layer.
+#'
+#'   Other columns are carried through unchanged. Missing expected columns are
+#'   added automatically and filled with `NA`.
+#'
+#' @return A tibble with the original data plus:
+#'   - `thickness_min_cm`, `thickness_max_cm`: thickness values converted to cm.
+#'   - `depth_top_cm`, `depth_bottom_cm`: depth values converted to cm.
+#'   - `thickness_plot`: representative thickness used for plotting.
+#'   - `thickness_plot_warning`: message if no thickness was available.
+#'   - `Depth_top`, `Depth_bottom`, `Depth_middle`: calculated depths (cm).
 #'   Rows without sufficient information are dropped.
 #'
 #' @details
-#' The function groups data by \code{stratsection_name} and orders layers
-#' according to \code{stratlayer_order_start_at_top}. Depths are then computed
-#' cumulatively (if only thickness is provided) or taken directly from absolute
-#' depth columns (if available).
+#' The function groups data by `stratsection_name` and orders layers according
+#'  to `stratlayer_order_start_at_top`. Depths are computed cumulatively if only
+#'  thickness is provided, or taken directly from absolute depth columns if
+#'  available.
 #'
+#' @examples
+#' # Example data is included with the package
+#' data("example_data_strat", package = "avstrat")
+#'
+#' # Order + thickness method (section "fake1")
+#' df1 <- subset(example_data_strat, stratsection_name == "fake1")
+#' add_depths(df1)
+#'
+#' # Start/stop depth method (section "fake3")
+#' df2 <- subset(example_data_strat, stratsection_name == "fake3")
+#' add_depths(df2)
+#'
+#' @importFrom rlang .data
 #' @export
 #'
 add_depths <- function(df) {
-  expected_headers <- c(
-    "stratmeasuremethod",
+  # Add required columns check
+  required_always <- c("stratsection_name", "stratlayer_name", "stratmeasuremethod")
+  missing_always <- setdiff(required_always, names(df))
+  if (length(missing_always) > 0) {
+    stop("Missing required columns: ", paste(missing_always, collapse = ", "))
+  }
+
+  # Add missing expected columns with NA values
+  other_expected_headers <- c(
     "stratlayer_order_start_at_top", "thickness_units", "thickness_typical",
     "thickness_min", "thickness_max", "depth_units", "depth_top",
-    "depth_bottom", "stratsection_name", "stratlayer_name", "stratlayer_order"
+    "depth_bottom", "stratlayer_order"
   )
-  # Add missing expected columns with NA values
-  missing <- setdiff(expected_headers, names(df))
+  missing <- setdiff(other_expected_headers, names(df))
   df[missing] <- NA
 
   # error if stratsection_name present but no stratmeasuremethod
   if (any(!is.na(df$stratsection_name) & is.na(df$stratmeasuremethod))) {
     stop("Rows with stratsection_name must define stratmeasuremethod.")
+  }
+
+  # error if invalid stratmeasuremethod
+  valid_methods <- c("order and thickness", "start and stop depth")
+  bad_methods <- setdiff(unique(na.omit(df$stratmeasuremethod)), valid_methods)
+  if (length(bad_methods) > 0) {
+    stop("Invalid stratmeasuremethod values: ", paste(bad_methods, collapse = ", "))
+  }
+
+  # error if invalid units
+  valid_units <- c("m", "meter", "meters", "cm", "centimeter", "centimeters",
+                   "mm", "millimeter", "millimeters")
+  bad_units <- df |>
+    dplyr::filter(!is.na(.data$thickness_units) & !.data$thickness_units %in% valid_units |
+                    !is.na(.data$depth_units) & !.data$depth_units %in% valid_units)
+  if (nrow(bad_units) > 0) {
+    stop("Invalid units detected in thickness_units or depth_units.\n",
+         "Problematic rows:\n",
+         paste(bad_units$stratsection_name, bad_units$stratlayer_name, sep = ":", collapse = "\n"))
   }
 
   # error if depth_top and depth_bottom not present when stratmeasuremethod == "start and stop depth"
@@ -76,11 +108,10 @@ add_depths <- function(df) {
     )
 
   if (nrow(bad_rows1) > 0) {
-    bad_sections <- unique(bad_rows1$stratsection_name)
     stop(
       "Rows with stratmeasuremethod 'start and stop depth' must define depth_top, depth_bottom, and depth_units.\n",
-      "Problematic stratsection_name(s): ",
-      paste(bad_sections, collapse = ", ")
+      "Problematic rows(s): ",
+      paste(bad_rows1$stratsection_name, bad_rows1$stratlayer_name, collapse = "\n")
     )
   }
 
@@ -99,21 +130,41 @@ add_depths <- function(df) {
     )
 
   if (nrow(bad_rows2) > 0) {
-    bad_sections <- unique(bad_rows2$stratsection_name)
     stop(
       "Rows with stratmeasuremethod 'order and thickness' must define at least one of thickness_typical, thickness_min, or thickness_max, ",
       "and must define thickness_units and stratlayer_order.\n",
-      "Problematic stratsection_name(s): ",
-      paste(bad_sections, collapse = ", ")
+      "Problematic rows(s): ",
+      paste(bad_rows2$stratsection_name, bad_rows2$stratlayer_name, collapse = "\n")
     )
   }
+
+  # Duplicate orders
+  dup_orders <- df |>
+    dplyr::filter(.data$stratmeasuremethod == "order and thickness") |>
+    dplyr::count(.data$stratsection_name, .data$stratlayer_order) |>
+    dplyr::filter(.data$n > 1)
+  if (nrow(dup_orders) > 0) {
+    stop("Duplicate stratlayer_order values within sections:\n",
+         paste(dup_orders$stratsection_name, dup_orders$stratlayer_order, sep = ":", collapse = "\n"))
+  }
+
+  # Depth_top < Depth_bottom
+  bad_depths <- df |>
+    dplyr::filter(.data$stratmeasuremethod == "start and stop depth" &
+                    !is.na(.data$depth_top) & !is.na(.data$depth_bottom) &
+                    .data$depth_top >= .data$depth_bottom)
+  if (nrow(bad_depths) > 0) {
+    stop("Invalid depth ranges (depth_top >= depth_bottom):\n",
+         paste(bad_depths$stratsection_name, bad_depths$stratlayer_name, collapse = "\n"))
+  }
+
 
   # internal function to convert to centimeters for consistency
   convert_to_cm <- function(value, units) {
     dplyr::case_when(
-      units %in% c("cm", "centimeters") ~ as.numeric(value),
-      units %in% c("mm", "millimeters") ~ as.numeric(value) / 10,
-      units %in% c("m", "meters") ~ as.numeric(value) * 100,
+      units %in% c("cm", "centimeters", "centimeter") ~ as.numeric(value),
+      units %in% c("mm", "millimeters", "millimeter") ~ as.numeric(value) / 10,
+      units %in% c("m", "meters", "meter") ~ as.numeric(value) * 100,
       TRUE ~ NA_real_
     )
   }

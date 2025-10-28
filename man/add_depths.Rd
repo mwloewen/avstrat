@@ -8,52 +8,69 @@ add_depths(df)
 }
 \arguments{
 \item{df}{A data frame containing stratigraphic layer information. The
-function works with two types of data input. If \code{stratlayermethod} is
-"order and thickness", expected columns include:
+following columns are required depending on the method:
+
+\strong{Always required}
 \itemize{
-\item \code{stratlayer_order_start_at_top} Logical or numeric indicator
-of whether ordering starts at the top.
-\item \code{thickness_units}, \code{thickness_typical},
-\code{thickness_min}, \code{thickness_max} Thickness information.
-\item \code{stratsection_name}, \code{stratlayer_order} Identifiers for
-sections and the relative order of each layer.
+\item \code{stratsection_name}: Unique identity of the section (repeated for each layer).
+\item \code{stratlayer_name}: Unique identity of the layer.
+\item \code{stratmeasuremethod}: One of \code{"order and thickness"} or \code{"start and stop depth"}.
 }
-If \code{stratlayermethod} is "start and stop depth", expected columns
-include:
+
+\strong{If \code{stratmeasuremethod == "order and thickness"}}
 \itemize{
-\item \code{depth_units}, \code{depth_top}, \code{depth_bottom} Absolute
-depth information.
+\item \code{stratlayer_order_start_at_top}: Logical, does ordering start at the top (\code{TRUE}) or bottom (\code{FALSE})?
+\item \code{stratlayer_order}: Integer order of layers within the section.
+\item \code{thickness_units}: One of \code{"meters"}, \code{"centimeters"}, \code{"millimeters"}.
+\item At least one of \code{thickness_typical}, \code{thickness_min}, or \code{thickness_max}.
 }
-Missing columns are added automatically and filled with \code{NA}.}
+
+\strong{If \code{stratmeasuremethod == "start and stop depth"}}
+\itemize{
+\item \code{depth_units}: One of \code{"meters"}, \code{"centimeters"}, \code{"millimeters"}.
+\item \code{depth_top}: Absolute depth of the top of the layer.
+\item \code{depth_bottom}: Absolute depth of the bottom of the layer.
+}
+
+Other columns are carried through unchanged. Missing expected columns are
+added automatically and filled with \code{NA}.}
 }
 \value{
-A tibble with the original data plus additional columns:
+A tibble with the original data plus:
 \itemize{
-\item \code{thickness_defining_cm}, \code{thickness_min_cm},
-\code{thickness_max_cm}: thickness values converted to centimeters.
-\item \code{depth_top_cm}, \code{depth_bottom_cm}: depth values converted
-to centimeters.
-\item \code{thickness_plot}: a single representative thickness for
-plotting, derived from available thickness information.
-\item \code{thickness_plot_warning}: warning message if no thickness was
-available.
-\item \code{Depth_top}, \code{Depth_bottom}, \code{Depth_middle}:
-calculated depths (cm) for each layer.
-}
+\item \code{thickness_min_cm}, \code{thickness_max_cm}: thickness values converted to cm.
+\item \code{depth_top_cm}, \code{depth_bottom_cm}: depth values converted to cm.
+\item \code{thickness_plot}: representative thickness used for plotting.
+\item \code{thickness_plot_warning}: message if no thickness was available.
+\item \code{Depth_top}, \code{Depth_bottom}, \code{Depth_middle}: calculated depths (cm).
 Rows without sufficient information are dropped.
 }
+}
 \description{
-This function takes a data frame of stratigraphic layer information and
+\code{add_depths()} takes a data frame of stratigraphic layer information and
 calculates standardized thickness and depth values. It ensures required
 columns are present, converts thickness and depth units to centimeters,
 derives a plotting thickness, and computes top, bottom, and middle depths
 for each layer within a stratigraphic section. The function is designed to
-handle input where layers are defined either by thickness or with  absolute
-start and stop depth values.
+handle input where layers are defined either by order and thickness or with
+absolute start and stop depth values.
 }
 \details{
-The function groups data by \code{stratsection_name} and orders layers
-according to \code{stratlayer_order_start_at_top}. Depths are then computed
-cumulatively (if only thickness is provided) or taken directly from absolute
-depth columns (if available).
+The function groups data by \code{stratsection_name} and orders layers according
+to \code{stratlayer_order_start_at_top}. Depths are computed cumulatively if only
+thickness is provided, or taken directly from absolute depth columns if
+available.
+}
+\examples{
+# Example data is included with the package
+data("example_data_strat", package = "avstrat")
+
+# Order + thickness method (section "fake1")
+df1 <- subset(example_data_strat, stratsection_name == "fake1")
+add_depths(df1)
+
+# Start/stop depth method (section "fake3")
+df2 <- subset(example_data_strat, stratsection_name == "fake3")
+add_depths(df2)
+
 }
