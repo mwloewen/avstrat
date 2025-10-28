@@ -7,16 +7,35 @@
 add_layer_width(df, grainsize_direction = c("increasing", "decreasing"))
 }
 \arguments{
-\item{df}{A data frame containing stratigraphic layer information. Expected
-columns include:
+\item{df}{A data frame containing stratigraphic layer information. The
+following columns are required:
 \itemize{
-\item \code{grainsize_top}, \code{grainsize_bottom}: grain size labels.
-If data are imported using \pkg{avstrat} load functions, correct data should
-be in the correct format. If not, grainsize values must match expected
-terms (see details).
-\item \code{Depth_top}, \code{Depth_bottom}: numeric depths for each
-layer. These should be determined after running \code{\link[=add_depths]{add_depths()}}.
-}}
+\item \code{stratsection_name}: Unique identity of the section (repeated for each layer).
+\item \code{stratlayer_name}: Unique identity of the layer.
+\item \code{Depth_top}, \code{Depth_bottom}: Depths in centimeters, as returned by \code{add_depths()}.
+\item \code{grainsize_top}: Grain size at the top of the layer.
+\item \code{grainsize_bottom}: Grain size at the bottom of the layer.
+}
+
+Grain size values must be chosen from the validated list (White & Houghton,
+2006, \emph{Geology} 34:677–680):
+\itemize{
+\item \code{"clay"} (<1/256 mm)
+\item \code{"silt"} (1/256-1/16 mm)
+\item \code{"very fine sand/ash"} (1/16-1/8 mm)
+\item \code{"fine sand/ash"} (1/8-1/4 mm)
+\item \code{"medium sand/ash"} (1/4-1/2 mm)
+\item \code{"coarse sand/ash"} (1/2-1 mm)
+\item \code{"very coarse sand/ash"} (1-2 mm)
+\item \code{"granule/fine lapilli"} (2-4 mm)
+\item \code{"pebble/medium lapilli"} (4-16 mm)
+\item \code{"cobble/coarse lapilli"} (1.6-6.4 cm)
+\item \code{"blocks/bombs/boulders"} (>6.4 cm)
+\item \code{NA} (no data)
+}
+
+Several legacy abbreviations (e.g. \code{"vca"}, \code{"vcs"}) are currently accepted
+but may be deprecated in future versions.}
 
 \item{grainsize_direction}{Character string, one of \code{"increasing"} or
 \code{"decreasing"}. Controls the numeric mapping of grain sizes:
@@ -30,7 +49,7 @@ Decreasing will show finer (typically more resistive) units as bigger
 which may better match observed erosional profiles.}
 }
 \value{
-A tibble in long format with columns:
+A tibble in long format with original data plus:
 \itemize{
 \item \code{size_loc}: identifier for polygon vertex locations.
 \item \code{size_text}: original grain size text.
@@ -39,30 +58,11 @@ A tibble in long format with columns:
 }
 }
 \description{
-This function reshapes stratigraphic layer grainsize data into a "long" format suitable
-for plotting polygons in a stratigraphic section diagram. It constructs left/right grain size boundaries, gathers them
-into long format, assigns depth coordinates, and converts grain size text
-labels into numeric values for plotting.
-}
-\details{
-Grain size text values are mapped to numeric codes (e.g., clay = 1,
-silt = 1, very fine sand = 2, ..., blocks/bombs/boulders = 10). The mapping
-is designed for stragigraphic plots plotting grainsize on the x-axis. Requires
-grainsize values to match list:
-\itemize{
-\item clay (<1/256 mm), clay, c
-\item silt (1/256-1/16 mm), silt, s
-\item very fine ash/sand (1/16-1/8 mm
-\item very_fine_ash_sand, very fine sand/ash, very fine ash, vfa, very fine sand, vfs
-\item fine ash/sand (1/8-1/4 mm), fine_ash_sand, fine sand/ash, fine ash, fa, fine sand, fs
-\item medium ash/sand (1/4-1/2 mm), medium_ash_sand, medium sand/ash, medium ash, ma, medium sand, ms
-\item coarse ash/sand (1/2-1 mm), coarse_ash_sand, coarse sand/ash, coarse ash, ca, coarse sand, cs
-\item very coarse ash/sand (1-2 mm), very_coarse_ash_sand, very coarse sand/ash, very coarse ash, vca, very coarse sand, vcs
-\item fine lapilli/granule (2-4 mm), fine_lapilli_granule, granule/fine lapilli, fine lapilli, fl, granule, g
-\item medium lapilli/pebble (4-16 mm), medium_lapilli_pebble, pebble/medium lapilli, medium lapilli, ml, pebble, p
-\item coarse lapilli/cobble (1.6-6.4 cm), coarse_lapilli_cobble, cobble/coarse lapilli, coarse lapilli, cl, cobble, co
-\item blocks/bombs/boulders (>6.4 cm), block_bomb_boulder, blocks/bombs/boulders, block, bomb, boulder, b
-}
+\code{add_layer_width()} reshapes stratigraphic layer grainsize data into a "long"
+format suitable for plotting polygons in a stratigraphic section diagram. It
+constructs left/right grain size boundaries, gathers them into long format,
+assigns depth coordinates, and converts grain size text labels into numeric
+values for plotting with \code{ggstrat()}.
 }
 \examples{
 library(dplyr)
@@ -75,4 +75,5 @@ Depth_top = c(0, 10),
 Depth_bottom = c(10, 20)
 )
 add_layer_width(df)
+
 }

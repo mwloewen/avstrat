@@ -31,3 +31,39 @@ test_that("after add_layer_width() and add_depths() plotting-critical columns ar
     ref[, c("grainsize", "depth")]
   )
 })
+
+test_that("invalid depth ranges trigger error", {
+  df <- data.frame(
+    stratsection_name = "s1",
+    stratlayer_name = "l1",
+    Depth_top = 20,
+    Depth_bottom = 10,
+    grainsize_top = "silt",
+    grainsize_bottom = "silt"
+  )
+  expect_error(add_layer_width(df), "Invalid depth ranges")
+})
+
+test_that("invalid grain size triggers error", {
+  df <- data.frame(
+    stratsection_name = "s1",
+    stratlayer_name = "l1",
+    Depth_top = 0,
+    Depth_bottom = 10,
+    grainsize_top = "sand",   # not in valid list
+    grainsize_bottom = "silt"
+  )
+  expect_error(add_layer_width(df), "Invalid grain size")
+})
+
+test_that("valid grain sizes pass", {
+  df <- data.frame(
+    stratsection_name = "s1",
+    stratlayer_name = "l1",
+    Depth_top = 0,
+    Depth_bottom = 10,
+    grainsize_top = "silt",
+    grainsize_bottom = "fine sand/ash"
+  )
+  expect_silent(add_layer_width(df))
+})
