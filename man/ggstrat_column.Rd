@@ -9,6 +9,7 @@ ggstrat_column(
   stratsection_name,
   use_theme = NULL,
   ylim = NULL,
+  depth_units = c("cm", "m"),
   ybreaks = 7,
   layer_fill = "layer_type",
   layer_fill_color = "stratpal_rpg",
@@ -26,6 +27,8 @@ Must include columns \code{stratsection_name}, \code{stratlayer_order},
 \item{use_theme}{A ggplot2 theme object to apply to the plot, e.g., "theme_avstrat".}
 
 \item{ylim}{Numeric vector of length 2 giving y-axis limits (optional).}
+
+\item{depth_units}{Units to use for depth (y-axis) scale, either "cm" (default) or "m".}
 
 \item{ybreaks}{Number of breaks on the y-axis.}
 

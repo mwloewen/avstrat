@@ -12,6 +12,7 @@ ggstrat(
   use_theme = NULL,
   xlim = c(-1, 10),
   ylim = NULL,
+  depth_units = c("cm", "m"),
   ybreaks = 7,
   layer_fill = "layer_type",
   layer_fill_color = "stratpal_rpg",
@@ -51,6 +52,8 @@ which may better match observed erosional profiles.}
 \item{xlim}{Numeric vector of length 2 giving x-axis limits.}
 
 \item{ylim}{Numeric vector of length 2 giving y-axis limits (optional).}
+
+\item{depth_units}{Units to use for depth (y-axis) scale, either "cm" (default) or "m".}
 
 \item{ybreaks}{Number of breaks on the y-axis.}
 

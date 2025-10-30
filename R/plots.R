@@ -27,6 +27,7 @@
 #' @param use_theme A ggplot2 theme object to apply to the plot, e.g., "theme_avstrat".
 #' @param xlim Numeric vector of length 2 giving x-axis limits.
 #' @param ylim Numeric vector of length 2 giving y-axis limits (optional).
+#' @param depth_units Units to use for depth (y-axis) scale, either "cm" (default) or "m".
 #' @param ybreaks Number of breaks on the y-axis.
 #' @param layer_fill Character string naming the column to use for fill. If
 #'  using anything other than "layer_type" from the template, will need to make
@@ -54,6 +55,7 @@ ggstrat <- function(df,
                     use_theme = NULL,
                     xlim = c(-1, 10),
                     ylim = NULL,
+                    depth_units = c("cm","m"),
                     ybreaks = 7,
                     layer_fill = "layer_type",
                     layer_fill_color = "stratpal_rpg",
@@ -73,6 +75,14 @@ ggstrat <- function(df,
                     "cobble", "boulders")
   gs_numeric <- c("NA", "<1/16 mm", "1/16-1/8 mm", "1/8-1/4 mm", "1/4-1/2 mm",
                   "1/2-1 mm", "1-2 mm", "2-4 mm", "4-16 mm", "1.6-6.4 cm", ">6.4 cm")
+  # scale depth if needed
+  depth_units <- match.arg(depth_units)
+  if (depth_units == "m") {
+    data_plot <- dplyr::mutate(data_plot, depth = .data$depth / 100)
+    y_label <- "Depth (m)"
+  } else {
+    y_label <- "Depth (cm)"
+  }
   # grainsize_labs options
   grainsize_direction <- match.arg(grainsize_direction)
   x_breaks <- if (grainsize_direction == "increasing") 0:10 else 10:0
@@ -95,7 +105,7 @@ ggstrat <- function(df,
       color = layer_border_color,
       linewidth = layer_border_linewidth) +
     scale_fill_stratpal(palette = layer_fill_color) +
-    scale_y_continuous(name = "Depth (cm)",
+    scale_y_continuous(name = y_label,
                        n.breaks = ybreaks,
                        trans = "reverse") +
     scale_x_continuous(limits = xlim,
@@ -117,7 +127,6 @@ ggstrat <- function(df,
   return(plot)
 }
 
-
 #' Plot a simple stratigraphic column
 #'
 #' Uses ggplot2 to create a simple depth-only stratigraphic section plot with no
@@ -130,6 +139,7 @@ ggstrat <- function(df,
 #' @param stratsection_name Character string giving the section name to filter.
 #' @param use_theme A ggplot2 theme object to apply to the plot, e.g., "theme_avstrat".
 #' @param ylim Numeric vector of length 2 giving y-axis limits (optional).
+#' @param depth_units Units to use for depth (y-axis) scale, either "cm" (default) or "m".
 #' @param ybreaks Number of breaks on the y-axis.
 #' @param layer_fill Character string naming the column to use for fill. If
 #'  using anything other than "layer_type" from the template, will need to make
@@ -153,6 +163,7 @@ ggstrat_column <- function(df,
                            stratsection_name,
                            use_theme = NULL,
                            ylim = NULL,
+                           depth_units = c("cm","m"),
                            ybreaks = 7,
                            layer_fill = "layer_type",
                            layer_fill_color = "stratpal_rpg",
@@ -163,6 +174,15 @@ ggstrat_column <- function(df,
     dplyr::filter({{ stratsection_name }} == stratsection_name) |>
     # Add depth info
     add_depths()
+
+  # scale depth if needed
+  depth_units <- match.arg(depth_units)
+  if (depth_units == "m") {
+    data_plot <- dplyr::mutate(data_plot, depth = .data$depth / 100)
+    y_label <- "Depth (m)"
+  } else {
+    y_label <- "Depth (cm)"
+  }
 
   plot <- ggplot(data = data_plot) +
     geom_rect(
@@ -177,7 +197,7 @@ ggstrat_column <- function(df,
     scale_fill_stratpal(palette = layer_fill_color) +
     scale_x_continuous(breaks = NULL) +
     scale_y_continuous(
-      name = "Depth (cm)",
+      name = y_label,
       n.breaks = ybreaks,
       trans = "reverse"
     ) +
@@ -308,8 +328,10 @@ ggstrat_label <- function(df,
 #'   Must include columns \code{stratsection_name}, \code{stratlayer_order},
 #'   \code{grainsize}, \code{depth}, \code{stratlayer_type}, and \code{SampleID}.
 #' @param stratsection_name Character string giving the section name to filter.
+#' @param label Character strin gnaming the column to use for labels. Default is "SampleID".
 #' @param use_theme A ggplot2 theme object to apply to the plot, e.g., "theme_avstrat".
 #' @param ylim Numeric vector of length 2 giving y-axis limits (optional).
+#' @param depth_units Units to use for depth (y-axis) scale, either "cm" (default) or "m".
 #' @param ybreaks Number of breaks on the y-axis.
 #'
 #' @return A patchwork/ggplot object combining the stratigraphic plot
@@ -326,19 +348,23 @@ ggstrat_label <- function(df,
 #'   ggstrat_samples(stratsection_name = "21LSHD02")
 ggstrat_samples <- function(df,
                             stratsection_name,
+                            label = "SampleID",
                             use_theme = NULL,
                             ylim = NULL,
+                            depth_units = c("cm", "m"),
                             ybreaks = 7) {
     # Grainsize-depth plot
     stratplot <- ggstrat(df = df,
                          stratsection_name = {{ stratsection_name }},
                          use_theme = use_theme,
                          ybreaks = ybreaks,
-                         ylim = ylim)
+                         ylim = ylim,
+                         depth_units = depth_units)
       ggplot2::theme(plot.margin = grid::unit(c(0.1, 0.1, 0.1, 0.1), "cm"))
     # Sample labels
     sampleplot <- ggstrat_label(df = df,
                                 stratsection_name = {{ stratsection_name }},
+                                label = {{ label }},
                                 use_theme = use_theme,
                                 ybreaks = ybreaks,
                                 ylim = ylim)
