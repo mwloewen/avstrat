@@ -67,3 +67,20 @@ path_indiv <- system.file("extdata", "example_inputs.xlsx",
                         layers_upload = layers,
                         samples_upload = samples)
    usethis::use_data(example_data_indiv, overwrite = TRUE)
+
+   # Extract sample data example
+
+   expected_samples_min <- extract_sample_depths(example_data_strat,
+                                                 remove_layer_metadata = TRUE)
+   saveRDS(
+     expected_samples_min,
+     file = "tests/testthat/testdata/expected_samples_min.rds"
+   )
+
+   expected_samples_difcol <- extract_sample_depths(example_data_strat,
+                                                 sample_column = "stratlayer_sample",
+                                                 remove_layer_metadata = TRUE)
+   saveRDS(
+     expected_samples_difcol,
+     file = "tests/testthat/testdata/expected_samples_difcol.rds"
+   )

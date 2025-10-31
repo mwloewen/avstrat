@@ -333,4 +333,59 @@ load_geodiva_forms <- function(station_sample_upload,
   return(data_strat)
 }
 
+#' Extract unnested samples with stratigraphic depths
+#'
+#' `extract_sample_depths()` takes a stratigraphic dataset that has already been merged
+#' (e.g. from [load_geodiva_forms()] or [load_stratdata_indiv()]) and
+#' applies [add_depths()] to compute absolute depths. It then expands a
+#' nested sample column (by default `"SampleID"`) so that each sample is
+#' represented as its own row, and drops rows where the chosen column is
+#' missing. Optionally, you can strip away all other layer metadata and
+#' return only the sample IDs and depth columns. Can be used on any nested or
+#' unested column.
+#'
+#' @param strat_data A data frame ready for applying [add_depths()],
+#'   containing `"SampleID"` or another column you want to expand to
+#'   sample-level rows.
+#' @param sample_column A string giving the name of the column to extract
+#'   and unnest. Defaults to `"SampleID"`.
+#' @param remove_layer_metadata Logical. If `TRUE`, only the selected
+#'   sample column and the depth columns (`Depth_top`, `Depth_middle`,
+#'   `Depth_bottom`) are returned. Defaults to `FALSE`.
+#' @importFrom rlang .data
+#'
+#' @returns A data frame with one row per sample, including the depth
+#'   information and associated layer metadata (unless
+#'   `remove_layer_metadata = TRUE`).
+#' @export
+#'
+#' @examples
+#' # Default: expand the SampleID column
+#' extract_sample_depths(example_data_strat)
+#'
+#' # Expand a different column (here "stratlayer_sample")
+#' extract_sample_depths(example_data_strat, sample_column = "stratlayer_sample")
+#'
+#' # Return only SampleID and depth columns
+#' extract_sample_depths(example_data_strat, remove_layer_metadata = TRUE)
+extract_sample_depths <- function(strat_data,
+                                  sample_column = "SampleID",
+                                  remove_layer_metadata = FALSE) {
+  out <- strat_data |>
+    add_depths() |>
+    dplyr::ungroup() |>
+    tidyr::unnest(cols = dplyr::all_of(sample_column)) |>
+    tidyr::drop_na(dplyr::all_of(sample_column))
+
+  if (isTRUE(remove_layer_metadata)) {
+    out <- dplyr::select(
+      out,
+      dplyr::all_of(sample_column),
+      dplyr::all_of(c("Depth_top", "Depth_middle", "Depth_bottom"))
+    )
+  }
+
+  out
+}
+
 

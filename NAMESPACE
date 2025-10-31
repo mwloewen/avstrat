@@ -2,6 +2,7 @@
 
 export(add_depths)
 export(add_layer_width)
+export(extract_sample_depths)
 export(ggstrat)
 export(ggstrat_bulk_save)
 export(ggstrat_column)

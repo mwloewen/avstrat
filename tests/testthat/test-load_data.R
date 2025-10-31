@@ -187,3 +187,21 @@ test_that("example_data_indiv matches example_data_strat on shared columns", {
   }
 })
 
+
+test_that("extract_sample_depths with remove_layer_metadata = TRUE matches saved fixture", {
+  expected <- readRDS(test_path("testdata/expected_samples_min.rds"))
+  result <- extract_sample_depths(example_data_strat, remove_layer_metadata = TRUE)
+
+  expect_equal(result, expected)
+})
+
+test_that("extract_sample_depths with different column matches saved fixture", {
+  expected <- readRDS(test_path("testdata/expected_samples_difcol.rds"))
+  result <- extract_sample_depths(
+    example_data_strat,
+    sample_column = "stratlayer_sample",
+    remove_layer_metadata = TRUE
+  )
+
+  expect_equal(result, expected)
+})

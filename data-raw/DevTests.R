@@ -64,32 +64,23 @@ samples <- read_xlsx("inst/extdata/example_inputs.xlsx", sheet = "samples")
 samples_layer <- read_xlsx("inst/extdata/example_inputs.xlsx", sheet = "samples_layer")
 
 
-##### 1. Station-Section-Sample-Layer join ####
-
-#Copilot output
-# 1. Build layers with samples collapsed/nested
-load_layers_with_samples <- function(stations_upload, sections_upload, layers_upload, samples_upload) {
-  samples_collapsed <- samples_upload |>
-    dplyr::group_by(.data$stratlayer_name) |>
-    dplyr::summarise(
-      stratlayer_sample = paste(.data$SampleID, collapse = "|"),
-      samples_nested = list(.data$SampleID),
-      .groups = "drop"
-    )
-
-  layers_upload |>
-    dplyr::left_join(sections_upload, by = "stratsection_name") |>
-    dplyr::left_join(stations_upload, by = "station_id") |>
-    dplyr::left_join(samples_collapsed, by = "stratlayer_name")
-}
 
 # 2. Explode samples and add depth info
-extract_samples_with_depths <- function(layers_with_samples, samples_upload) {
-  extract_samples <- layers_with_samples |>
+library(avstrat)
+extract_sample_depths <- function(strat_data, sample_column = SampleID) {
+  strat_data |>
     add_depths() |>
     dplyr::ungroup() |>
-    tidyr::unnest(cols = .data$samples_nested) |>
-    dplyr::rename(SampleID = .data$samples_nested)
+    tidyr::unnest(cols = {{ sample_column }}) |>
+    tidyr::drop_na({{ sample_column }})
+}
+sampledf <- extract_sample_depths(
+  strat_data = example_data_strat)
+
+sampledf <- extract_sample_depths(
+  strat_data = example_data_strat,
+  sample_column = stratlayer_sample)
+
 
   samples_upload |>
     dplyr::left_join(
