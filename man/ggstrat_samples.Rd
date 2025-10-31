@@ -7,7 +7,7 @@
 ggstrat_samples(
   df,
   stratsection_name,
-  label = "SampleID",
+  label = "stratlayer_sample",
   use_theme = NULL,
   ylim = NULL,
   depth_units = c("cm", "m"),

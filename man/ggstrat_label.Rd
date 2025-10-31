@@ -8,7 +8,7 @@ ggstrat_label(
   df,
   stratsection_name,
   use_theme = NULL,
-  label = "SampleID",
+  label = "stratlayer_sample",
   ylim = NULL,
   ybreaks = 7
 )

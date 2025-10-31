@@ -268,7 +268,7 @@ ggstrat_column <- function(df,
 ggstrat_label <- function(df,
                           stratsection_name,
                           use_theme = NULL,
-                          label = "SampleID",
+                          label = "stratlayer_sample",
                           ylim = NULL,
                           ybreaks = 7) {
   # First, filter data to the station you want to plot
@@ -348,7 +348,7 @@ ggstrat_label <- function(df,
 #'   ggstrat_samples(stratsection_name = "21LSHD02")
 ggstrat_samples <- function(df,
                             stratsection_name,
-                            label = "SampleID",
+                            label = "stratlayer_sample",
                             use_theme = NULL,
                             ylim = NULL,
                             depth_units = c("cm", "m"),

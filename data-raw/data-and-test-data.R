@@ -49,3 +49,4 @@ saveRDS(
   example_width_decreasing,
   file = "tests/testthat/testdata/example_width_decreasing.rds"
 )
+

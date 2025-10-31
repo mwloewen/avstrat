@@ -312,7 +312,9 @@ load_geodiva_forms <- function(station_sample_upload,
     dplyr::left_join(sections, by = "stratsection_name") |>
     dplyr::left_join(stations, by = c("station_id" = "StationID")) |>
     dplyr::rename(StationID = dplyr::all_of("station_id")) |>
-    dplyr::rename(SampleID = dplyr::all_of("stratlayer_sample"))
+    dplyr::mutate(
+      SampleID = strsplit(.data$stratlayer_sample, "\\|")
+    )
 
   # Print the section list
   SectionList <- sort(unique(data_strat[["stratsection_name"]]))

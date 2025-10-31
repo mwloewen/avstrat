@@ -39,7 +39,7 @@ A data frame with 136 rows and 38 columns:
 \item{tephra_guess}{Character. Tentative tephra identification.}
 \item{volcano_name}{Character. Source volcano name. If multiple source volcanoes separated by "|".}
 \item{eruption_name}{Character. Source eruption name.}
-\item{SampleID}{Character. Sample identifier. If multiple samples separated by "|".}
+\item{stratlayer_sample}{Character. Sample identifier. If multiple samples separated by "|".}
 \item{StationID}{Character. Station identifier.}
 \item{stratmeasuremethod}{Character. Method used for stratigraphic measurement.}
 \item{stratlayer_order_start_at_top}{Logical. Whether ordering starts at the top.}
@@ -47,6 +47,7 @@ A data frame with 136 rows and 38 columns:
 \item{Latdd}{Numeric. Latitude in decimal degrees.}
 \item{Longdd}{Numeric. Longitude in decimal degrees.}
 \item{LocationDesc}{Character. Location description.}
+\item{SampleID}{Character. Sample identifier. If multiple samples stored as a nested list}
 }
 }
 }
