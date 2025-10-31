@@ -50,3 +50,20 @@ saveRDS(
   file = "tests/testthat/testdata/example_width_decreasing.rds"
 )
 
+
+# Build individual upload example data result
+path_indiv <- system.file("extdata", "example_inputs.xlsx",
+                            package = "avstrat")
+
+ if (requireNamespace("readxl", quietly = TRUE)) {
+   stations <- readxl::read_xlsx(path_indiv, sheet = "stations")
+   sections <- readxl::read_xlsx(path_indiv, sheet = "sections")
+   layers <- readxl::read_xlsx(path_indiv, sheet = "layers")
+   samples <- readxl::read_xlsx(path_indiv, sheet = "samples_layer")
+   }
+
+   example_data_indiv <- load_stratdata_indiv(stations_upload = stations,
+                        sections_upload = sections,
+                        layers_upload = layers,
+                        samples_upload = samples)
+   usethis::use_data(example_data_indiv, overwrite = TRUE)

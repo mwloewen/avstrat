@@ -93,7 +93,7 @@
 #' @return A data frame of layers joined with section and station metadata,
 #'   plus collapsed sample information:
 #'   - `stratlayer_sample`: concatenated `SampleID`s per layer (separated by `"|"`).
-#'   - `samples_nested`: list column of `SampleID`s per layer.
+#'   - `SampleID`: list column of `SampleID`s per layer.
 #'
 #' @examples
 #' # Locate the example Excel files shipped with the package
@@ -126,7 +126,7 @@ load_stratdata_indiv <- function(stations_upload,
     dplyr::group_by(.data$stratlayer_name) |>
     dplyr::summarise(
       stratlayer_sample = paste(.data$SampleID, collapse = "|"),
-      samples_nested = list(.data$SampleID),
+      SampleID = list(.data$SampleID),
       .groups = "drop"
     )
 
@@ -172,8 +172,8 @@ load_stratdata_indiv <- function(stations_upload,
         dplyr::left_join(samples_collapsed, by = "stratlayer_name")
     } else {
       # they match, so just add the nested list column if missing
-      if (!"samples_nested" %in% names(out)) {
-        out <- dplyr::left_join(out, dplyr::select(samples_collapsed, "stratlayer_name", "samples_nested"),
+      if (!"SampleID" %in% names(out)) {
+        out <- dplyr::left_join(out, dplyr::select(samples_collapsed, "stratlayer_name", "SampleID"),
           by = "stratlayer_name"
         )
       }
@@ -183,6 +183,15 @@ load_stratdata_indiv <- function(stations_upload,
     out <- dplyr::left_join(out, samples_collapsed, by = "stratlayer_name")
   }
 
+  # Final normalization: replace NULL/length-0 with NA_character_ in SampleID
+  if ("SampleID" %in% names(out)) {
+    out <- dplyr::mutate(
+      out,
+      SampleID = lapply(.data$SampleID, function(x) {
+        if (is.null(x) || length(x) == 0) NA_character_ else x
+      })
+    )
+  }
   out
 }
 
@@ -311,7 +320,7 @@ load_geodiva_forms <- function(station_sample_upload,
   data_strat <- layers |>
     dplyr::left_join(sections, by = "stratsection_name") |>
     dplyr::left_join(stations, by = c("station_id" = "StationID")) |>
-    dplyr::rename(StationID = dplyr::all_of("station_id")) |>
+   # dplyr::rename(StationID = dplyr::all_of("station_id")) |>
     dplyr::mutate(
       SampleID = strsplit(.data$stratlayer_sample, "\\|")
     )

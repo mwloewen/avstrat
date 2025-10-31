@@ -66,17 +66,17 @@ test_that("load_stratdata_indiv joins and collapses correctly", {
   # Basic structure
   expect_s3_class(result, "data.frame")
   expect_true(all(c("station_id", "stratsection_name", "stratlayer_name",
-                    "stratlayer_sample", "samples_nested") %in% names(result)))
+                    "stratlayer_sample", "SampleID") %in% names(result)))
 
   # Check sample collapsing
   l1 <- result[result$stratlayer_name == "L1", ]
   expect_equal(l1$stratlayer_sample, "S1|S2")
-  expect_equal(unlist(l1$samples_nested), c("S1", "S2"))
+  expect_equal(unlist(l1$SampleID), c("S1", "S2"))
 
   # Check single sample layer
   l3 <- result[result$stratlayer_name == "L3", ]
   expect_equal(l3$stratlayer_sample, "S4")
-  expect_equal(unlist(l3$samples_nested), "S4")
+  expect_equal(unlist(l3$SampleID), "S4")
 })
 
 test_that("load_stratdata_indiv handles pre-merged sections", {
@@ -164,5 +164,26 @@ test_that("load_stratdata_indiv warns and replaces on stratlayer_sample mismatch
 
   # After recomputation, the wrong value should be replaced
   expect_equal(result$stratlayer_sample, "S1|S2")
-  expect_equal(unlist(result$samples_nested), c("S1", "S2"))
+  expect_equal(unlist(result$SampleID), c("S1", "S2"))
 })
+
+test_that("example_data_indiv matches example_data_strat on shared columns", {
+  indiv_cols <- colnames(example_data_indiv)
+  strat_cols <- colnames(example_data_strat)
+
+  # 1. Column names: all indiv columns must exist in strat
+  expect_true(all(indiv_cols %in% strat_cols))
+
+  # 2. Same number of rows
+  expect_equal(nrow(example_data_indiv), nrow(example_data_strat))
+
+  # 3. Values in each shared column are identical
+  for (col in indiv_cols) {
+    expect_equal(
+      example_data_indiv[[col]],
+      example_data_strat[[col]],
+      info = paste("Mismatch in column:", col)
+    )
+  }
+})
+

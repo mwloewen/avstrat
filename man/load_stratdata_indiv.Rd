@@ -113,7 +113,7 @@ A data frame of layers joined with section and station metadata,
 plus collapsed sample information:
 \itemize{
 \item \code{stratlayer_sample}: concatenated \code{SampleID}s per layer (separated by \code{"|"}).
-\item \code{samples_nested}: list column of \code{SampleID}s per layer.
+\item \code{SampleID}: list column of \code{SampleID}s per layer.
 }
 }
 \description{

@@ -7,7 +7,7 @@
 \format{
 \subsection{\code{example_data_strat}}{
 
-A data frame with 136 rows and 38 columns:
+A data frame with 244 rows and 39 columns:
 \describe{
 \item{stratsection_name}{Character. Name/identifier of the stratigraphic section.}
 \item{stratlayer_name}{Character. Name/identifier of the stratigraphic layer.}
@@ -40,14 +40,14 @@ A data frame with 136 rows and 38 columns:
 \item{volcano_name}{Character. Source volcano name. If multiple source volcanoes separated by "|".}
 \item{eruption_name}{Character. Source eruption name.}
 \item{stratlayer_sample}{Character. Sample identifier. If multiple samples separated by "|".}
-\item{StationID}{Character. Station identifier.}
+\item{station_id}{Character. Station identifier.}
 \item{stratmeasuremethod}{Character. Method used for stratigraphic measurement.}
 \item{stratlayer_order_start_at_top}{Logical. Whether ordering starts at the top.}
 \item{section_notes}{Character. Free‑text notes about the section.}
 \item{Latdd}{Numeric. Latitude in decimal degrees.}
 \item{Longdd}{Numeric. Longitude in decimal degrees.}
 \item{LocationDesc}{Character. Location description.}
-\item{SampleID}{Character. Sample identifier. If multiple samples stored as a nested list}
+\item{SampleID}{List. Nested list column of sample IDs per layer.}
 }
 }
 }
