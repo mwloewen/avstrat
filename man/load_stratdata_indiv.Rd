@@ -8,7 +8,7 @@ load_stratdata_indiv(
   stations_upload,
   sections_upload,
   layers_upload,
-  samples_upload
+  samples_upload = NULL
 )
 }
 \arguments{

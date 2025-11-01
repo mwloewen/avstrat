@@ -120,16 +120,7 @@
 load_stratdata_indiv <- function(stations_upload,
                                  sections_upload,
                                  layers_upload,
-                                 samples_upload) {
-  # collapse samples per layer
-  samples_collapsed <- samples_upload |>
-    dplyr::group_by(.data$stratlayer_name) |>
-    dplyr::summarise(
-      stratlayer_sample = paste(.data$SampleID, collapse = "|"),
-      SampleID = list(.data$SampleID),
-      .groups = "drop"
-    )
-
+                                 samples_upload = NULL) {
   # start with layers
   out <- layers_upload
 
@@ -145,42 +136,64 @@ load_stratdata_indiv <- function(stations_upload,
     out <- dplyr::left_join(out, stations_upload, by = "station_id")
   }
 
-  # handle stratlayer_sample logic
-  if ("stratlayer_sample" %in% names(out)) {
-    # compare with recomputed
-    check <- dplyr::left_join(
-      dplyr::select(out, "stratlayer_name", "stratlayer_sample"),
-      samples_collapsed,
-      by = "stratlayer_name",
-      suffix = c("_existing", "_computed")
-    )
-
-    mismatches <- dplyr::filter(
-      check,
-      .data$stratlayer_sample_existing != .data$stratlayer_sample_computed
-    )
-
-    if (nrow(mismatches) > 0) {
-      warn_layers <- paste(unique(mismatches$stratlayer_name), collapse = ", ")
-      warning(
-        "Existing stratlayer_sample values differ from recomputed values in ",
-        nrow(mismatches), " layer(s): ",
-        warn_layers,
-        ". Using recomputed values."
+  # handle samples logic
+  if (!is.null(samples_upload)) {
+    # collapse samples per layer
+    samples_collapsed <- samples_upload |>
+      dplyr::group_by(.data$stratlayer_name) |>
+      dplyr::summarise(
+        stratlayer_sample = paste(.data$SampleID, collapse = "|"),
+        SampleID = list(.data$SampleID),
+        .groups = "drop"
       )
-      out <- dplyr::select(out, -dplyr::all_of("stratlayer_sample")) |>
-        dplyr::left_join(samples_collapsed, by = "stratlayer_name")
-    } else {
-      # they match, so just add the nested list column if missing
-      if (!"SampleID" %in% names(out)) {
-        out <- dplyr::left_join(out, dplyr::select(samples_collapsed, "stratlayer_name", "SampleID"),
-          by = "stratlayer_name"
+
+    if ("stratlayer_sample" %in% names(out)) {
+      # compare with recomputed
+      check <- dplyr::left_join(
+        dplyr::select(out, "stratlayer_name", "stratlayer_sample"),
+        samples_collapsed,
+        by = "stratlayer_name",
+        suffix = c("_existing", "_computed")
+      )
+
+      mismatches <- dplyr::filter(
+        check,
+        .data$stratlayer_sample_existing != .data$stratlayer_sample_computed
+      )
+
+      if (nrow(mismatches) > 0) {
+        warn_layers <- paste(unique(mismatches$stratlayer_name), collapse = ", ")
+        warning(
+          "Existing stratlayer_sample values differ from recomputed values in ",
+          nrow(mismatches), " layer(s): ",
+          warn_layers,
+          ". Using recomputed values."
         )
+        out <- dplyr::select(out, -dplyr::all_of("stratlayer_sample")) |>
+          dplyr::left_join(samples_collapsed, by = "stratlayer_name")
+      } else {
+        # they match, so just add the nested list column if missing
+        if (!"SampleID" %in% names(out)) {
+          out <- dplyr::left_join(
+            out,
+            dplyr::select(samples_collapsed, "stratlayer_name", "SampleID"),
+            by = "stratlayer_name"
+          )
+        }
       }
+    } else {
+      # no existing stratlayer_sample, so join fresh
+      out <- dplyr::left_join(out, samples_collapsed, by = "stratlayer_name")
     }
   } else {
-    # no existing stratlayer_sample, so join fresh
-    out <- dplyr::left_join(out, samples_collapsed, by = "stratlayer_name")
+    # no samples_upload provided
+    if ("stratlayer_sample" %in% names(out) && !"SampleID" %in% names(out)) {
+      # derive nested SampleID from stratlayer_sample string
+      out <- out |>
+        dplyr::mutate(
+          SampleID = strsplit(.data$stratlayer_sample, "\\|")
+        )
+    }
   }
 
   # Final normalization: replace NULL/length-0 with NA_character_ in SampleID
@@ -192,11 +205,9 @@ load_stratdata_indiv <- function(stations_upload,
       })
     )
   }
+
   out
 }
-
-
-
 
 
 #' Load stratigraphic data from GeoDIVA upload forms
