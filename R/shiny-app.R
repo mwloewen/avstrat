@@ -55,7 +55,9 @@ run_ggstrat_app <- function(df,
     output$stationmap <- leaflet::renderLeaflet({
       stations <- df |>
         dplyr::select(dplyr::all_of(c("stratsection_name", "Latdd", "Longdd"))) |>
-        dplyr::distinct()
+        dplyr::distinct() |>
+        dplyr::collect() |>                        #  load the lazy table for station data
+        dplyr::filter(!is.na(.data$Latdd), !is.na(.data$Longdd))  # drop rows with missing coords
 
       leaflet::leaflet() |>
         leaflet::addProviderTiles("OpenTopoMap") |>
@@ -83,7 +85,7 @@ run_ggstrat_app <- function(df,
 
     # Plot rendering
     output$plot <- shiny::renderPlot({
-      plot_fun(df = df, stratsection_name = SelectStation())
+      plot_fun(df = df, section_name = SelectStation())
     })
   }
 

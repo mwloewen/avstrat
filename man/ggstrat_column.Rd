@@ -6,7 +6,7 @@
 \usage{
 ggstrat_column(
   df,
-  stratsection_name,
+  section_name,
   use_theme = NULL,
   ylim = NULL,
   depth_units = c("cm", "m"),
@@ -22,7 +22,7 @@ ggstrat_column(
 Must include columns \code{stratsection_name}, \code{stratlayer_order},
 \code{grainsize}, \code{depth}, and \code{stratlayer_type}.}
 
-\item{stratsection_name}{Character string giving the section name to filter.}
+\item{section_name}{Character string giving the section name to filter "stratsection_name".}
 
 \item{use_theme}{A ggplot2 theme object to apply to the plot, e.g., "theme_avstrat".}
 
@@ -51,5 +51,5 @@ variable mapped to the x-axis. Each layer is drawn as a fixed-width rectangle.
 }
 \examples{
 example_data_strat |>
-  ggstrat_column(stratsection_name = "21LSHD02")
+  ggstrat_column(section_name = "21LSHD02")
 }

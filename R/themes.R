@@ -12,12 +12,12 @@
 #'
 #' @examples
 #' # Apply a custom theme to one plot
-#' ggstrat(df = example_data_strat, stratsection_name = "21LSHD02") +
+#' ggstrat(df = example_data_strat, section_name = "21LSHD02") +
 #'   theme_avstrat()
 #'
-#'   #' # Set the custom theme as default for all plots
-#'   ggplot2::theme_set(theme_avstrat())
-#'   ggstrat(df = example_data_strat, stratsection_name = "21LSHD02")
+#' # Set the custom theme as default for all plots
+#' ggplot2::theme_set(theme_avstrat())
+#' ggstrat(df = example_data_strat, section_name = "21LSHD02")
 theme_avstrat <- function(base_size = 11, base_family = "arial") {
   ggplot2::theme_classic(base_size = base_size, base_family = base_family) %+replace%
     ggplot2::theme(

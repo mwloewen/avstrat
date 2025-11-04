@@ -6,7 +6,7 @@
 \usage{
 ggstrat_samples(
   df,
-  stratsection_name,
+  section_name,
   label = "stratlayer_sample",
   use_theme = NULL,
   ylim = NULL,
@@ -19,7 +19,7 @@ ggstrat_samples(
 Must include columns \code{stratsection_name}, \code{stratlayer_order},
 \code{grainsize}, \code{depth}, \code{stratlayer_type}, and \code{SampleID}.}
 
-\item{stratsection_name}{Character string giving the section name to filter.}
+\item{section_name}{Character string giving the section name to filter "stratsection_name".}
 
 \item{label}{Character strin gnaming the column to use for labels. Default is "SampleID".}
 
@@ -43,5 +43,5 @@ and legends are collected at the bottom.
 }
 \examples{
 example_data_strat |>
-  ggstrat_samples(stratsection_name = "21LSHD02")
+  ggstrat_samples(section_name = "21LSHD02")
 }

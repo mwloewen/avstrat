@@ -6,7 +6,7 @@
 \usage{
 ggstrat_label(
   df,
-  stratsection_name,
+  section_name,
   use_theme = NULL,
   label = "stratlayer_sample",
   ylim = NULL,
@@ -18,7 +18,7 @@ ggstrat_label(
 Must include columns \code{stratsection_name}, \code{stratlayer_order},
 \code{grainsize}, \code{depth}, and the column specified by \code{layer_fill}.}
 
-\item{stratsection_name}{Character string giving the section name to filter.}
+\item{section_name}{Character string giving the section name to filter "stratsection_name".}
 
 \item{use_theme}{A ggplot2 theme object to apply to the plot, e.g., "theme_avstrat".}
 
@@ -42,16 +42,16 @@ ggplot objects.
 \examples{
 # Example 1: Basic usage
 example_data_strat |>
-  ggstrat_label(stratsection_name = "21LSHD02",
+  ggstrat_label(section_name = "21LSHD02",
               label = "SampleID")
 
 # Example 2: Combine with a stratigraphic section plot using patchwork
 if (requireNamespace("patchwork", quietly = TRUE)) {
   stratsection <- example_data_strat |>
-    ggstrat(stratsection_name = "21LSHD02")
+    ggstrat(section_name = "21LSHD02")
 
   samples <- example_data_strat |>
-    ggstrat_label(stratsection_name = "21LSHD02",
+    ggstrat_label(section_name = "21LSHD02",
               label = "SampleID")
 
   stratsection + samples

@@ -5,7 +5,7 @@
 #' @param df A data frame containing stratigraphic data.
 #'   Must include columns \code{stratsection_name}, \code{stratlayer_order},
 #'   \code{grainsize}, \code{depth}, and \code{stratlayer_type}.
-#' @param stratsection_name Character string giving the section name to filter.
+#' @param section_name Character string giving the section name to filter "stratsection_name".
 #' @param grainsize_direction Character string, one of \code{"increasing"} or
 #'   \code{"decreasing"}. Controls the numeric mapping of grain sizes:
 #'   \itemize{
@@ -47,9 +47,9 @@
 #' @examples
 #' example_data_strat |>
 #'  add_depths() |>
-#'  ggstrat(stratsection_name = "21LSHD02")
+#'  ggstrat(section_name = "21LSHD02")
 ggstrat <- function(df,
-                    stratsection_name,
+                    section_name,
                     grainsize_direction = c("increasing", "decreasing"),
                     grainsize_labs = gs_volc_abbr,
                     use_theme = NULL,
@@ -88,7 +88,9 @@ ggstrat <- function(df,
   x_breaks <- if (grainsize_direction == "increasing") 0:10 else 10:0
   # First, filter data to the station you want to plot
   data_plot <- df |>
-    dplyr::filter({{ stratsection_name }} == stratsection_name) |>
+    dplyr::filter(.data$stratsection_name == !!section_name) |>
+    # Collect any database to local memory (will not affect local data)
+    dplyr::collect() |>
     # Add depth info
     add_depths() |>
     # Prepare data for geom_polygon layer of a strat section.
@@ -115,7 +117,7 @@ ggstrat <- function(df,
     coord_cartesian(xlim = xlim,
                     ylim = ylim,
                     expand = F) +
-    ggtitle(stratsection_name) +
+    ggtitle(section_name) +
     use_theme +
     theme(legend.position = "bottom",
           legend.title = element_blank(),
@@ -136,7 +138,7 @@ ggstrat <- function(df,
 #' @param df A data frame containing stratigraphic data.
 #'   Must include columns \code{stratsection_name}, \code{stratlayer_order},
 #'   \code{grainsize}, \code{depth}, and \code{stratlayer_type}.
-#' @param stratsection_name Character string giving the section name to filter.
+#' @param section_name Character string giving the section name to filter "stratsection_name".
 #' @param use_theme A ggplot2 theme object to apply to the plot, e.g., "theme_avstrat".
 #' @param ylim Numeric vector of length 2 giving y-axis limits (optional).
 #' @param depth_units Units to use for depth (y-axis) scale, either "cm" (default) or "m".
@@ -158,9 +160,9 @@ ggstrat <- function(df,
 #'
 #' @examples
 #' example_data_strat |>
-#'   ggstrat_column(stratsection_name = "21LSHD02")
+#'   ggstrat_column(section_name = "21LSHD02")
 ggstrat_column <- function(df,
-                           stratsection_name,
+                           section_name,
                            use_theme = NULL,
                            ylim = NULL,
                            depth_units = c("cm","m"),
@@ -171,7 +173,9 @@ ggstrat_column <- function(df,
                            layer_border_linewidth = 0.2) {
   # First, filter data to the station you want to plot
   data_plot <- df |>
-    dplyr::filter({{ stratsection_name }} == stratsection_name) |>
+    dplyr::filter(.data$stratsection_name == !!section_name) |>
+    # Collect any database to local memory (will not affect local data)
+    dplyr::collect() |>
     # Add depth info
     add_depths()
 
@@ -205,7 +209,7 @@ ggstrat_column <- function(df,
       ylim = ylim,
       expand = F
     ) +
-    ggtitle(data_plot$stratsection_name) +
+    ggtitle(section_name) +
     use_theme +
     theme(
       legend.position = "bottom",
@@ -235,7 +239,7 @@ ggstrat_column <- function(df,
 #'   \code{grainsize}, \code{depth}, and the column specified by \code{layer_fill}.
 #' @param label Character strin gnaming the column to use for labels. Default is "SampleID".
 #' @param use_theme A ggplot2 theme object to apply to the plot, e.g., "theme_avstrat".
-#' @param stratsection_name Character string giving the section name to filter.
+#' @param section_name Character string giving the section name to filter "stratsection_name".
 #' @param ylim Numeric vector of length 2 giving y-axis limits (optional).
 #' @param ybreaks Number of breaks on the y-axis.
 #'
@@ -250,35 +254,36 @@ ggstrat_column <- function(df,
 #' @examples
 #' # Example 1: Basic usage
 #' example_data_strat |>
-#'   ggstrat_label(stratsection_name = "21LSHD02",
+#'   ggstrat_label(section_name = "21LSHD02",
 #'               label = "SampleID")
 #'
 #' # Example 2: Combine with a stratigraphic section plot using patchwork
 #' if (requireNamespace("patchwork", quietly = TRUE)) {
 #'   stratsection <- example_data_strat |>
-#'     ggstrat(stratsection_name = "21LSHD02")
+#'     ggstrat(section_name = "21LSHD02")
 #'
 #'   samples <- example_data_strat |>
-#'     ggstrat_label(stratsection_name = "21LSHD02",
+#'     ggstrat_label(section_name = "21LSHD02",
 #'               label = "SampleID")
 #'
 #'   stratsection + samples
 #' }
 #'
 ggstrat_label <- function(df,
-                          stratsection_name,
+                          section_name,
                           use_theme = NULL,
                           label = "stratlayer_sample",
                           ylim = NULL,
                           ybreaks = 7) {
   # First, filter data to the station you want to plot
   data_plot <- df |>
-    dplyr::filter({{ stratsection_name }} == stratsection_name) |>
+    dplyr::filter(.data$stratsection_name == !!section_name) |>
+    # Collect any database to local memory (will not affect local data)
+    dplyr::collect() |>
     # Add depth info
     add_depths()
   # Second, filter a data frame with only samples to plot
   label_plot <- data_plot |>
-      add_depths() |>
     tidyr::drop_na(dplyr::all_of(label))
   # Now we can make the plot
   plot <- ggplot(data = data_plot) +
@@ -327,7 +332,7 @@ ggstrat_label <- function(df,
 #' @param df A data frame containing stratigraphic data.
 #'   Must include columns \code{stratsection_name}, \code{stratlayer_order},
 #'   \code{grainsize}, \code{depth}, \code{stratlayer_type}, and \code{SampleID}.
-#' @param stratsection_name Character string giving the section name to filter.
+#' @param section_name Character string giving the section name to filter "stratsection_name".
 #' @param label Character strin gnaming the column to use for labels. Default is "SampleID".
 #' @param use_theme A ggplot2 theme object to apply to the plot, e.g., "theme_avstrat".
 #' @param ylim Numeric vector of length 2 giving y-axis limits (optional).
@@ -345,9 +350,9 @@ ggstrat_label <- function(df,
 #'
 #' @examples
 #' example_data_strat |>
-#'   ggstrat_samples(stratsection_name = "21LSHD02")
+#'   ggstrat_samples(section_name = "21LSHD02")
 ggstrat_samples <- function(df,
-                            stratsection_name,
+                            section_name,
                             label = "stratlayer_sample",
                             use_theme = NULL,
                             ylim = NULL,
@@ -355,7 +360,7 @@ ggstrat_samples <- function(df,
                             ybreaks = 7) {
     # Grainsize-depth plot
     stratplot <- ggstrat(df = df,
-                         stratsection_name = {{ stratsection_name }},
+                         section_name = {{ section_name }},
                          use_theme = use_theme,
                          ybreaks = ybreaks,
                          ylim = ylim,
@@ -363,7 +368,7 @@ ggstrat_samples <- function(df,
       ggplot2::theme(plot.margin = grid::unit(c(0.1, 0.1, 0.1, 0.1), "cm"))
     # Sample labels
     sampleplot <- ggstrat_label(df = df,
-                                stratsection_name = {{ stratsection_name }},
+                                section_name = {{ section_name }},
                                 label = {{ label }},
                                 use_theme = use_theme,
                                 ybreaks = ybreaks,

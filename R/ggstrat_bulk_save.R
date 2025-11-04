@@ -83,7 +83,7 @@ ggstrat_bulk_save <- function(df,
   for (i in SectionList) {
     # Call the plotting function, passing df and the current section
     p <- plotfunction(df,
-      stratsection_name = i,
+      section_name = i,
       ...
     )
 

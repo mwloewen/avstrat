@@ -13,13 +13,13 @@ knitr::opts_chunk$set(
 )
 ```
 
-# avstrat <img src="man/figures/logo.png" align="right" height="200" />
+# avstrat <img src="man/figures/logo.png" align="right" height="200"/>
 
 Tools for Generating Stratigraphic Sections
 
 <!-- badges: start -->
 
-[![R-CMD-check](https://github.com/mwloewen/avstrat/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/mwloewen/avstrat/actions/workflows/R-CMD-check.yaml) [![Codecov test coverage](https://codecov.io/gh/mwloewen/avstrat/graph/badge.svg)](https://app.codecov.io/gh/mwloewen/avstrat)
+[![R-CMD-check](https://github.com/mwloewen/avstrat/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/mwloewen/avstrat/actions/workflows/R-CMD-check.yaml)
 
 <!-- badges: end -->
 
@@ -71,21 +71,21 @@ data_strat <- example_data_strat
 theme_set(theme_avstrat())
 
 # Produce a strat section
-ggstrat(df = data_strat, stratsection_name = '21LSHD02')
+ggstrat(df = data_strat, section_name = '21LSHD02')
 ```
 
 The default `ggstrat()` plot emphasizes coarser grained deposits as larger bars, useful for recognizing significant tephra deposits. Many prefer stratigraphic profiles to reflect the erosional profile of an outcrop. This would be best achieved by recording a "erodability" metric in the field, but a rough version of this is to plot the fine-grained layers as thicker than coarse grained layers, as these typically are less prone to erosion.
 
 ```{r example_reverse_grainsize_plot, fig.width=2.5, fig.height=5, out.width='31%'}
-ggstrat(df = data_strat, stratsection_name = '21LSHD02', grainsize_direction = "decreasing")
+ggstrat(df = data_strat, section_name = '21LSHD02', grainsize_direction = "decreasing")
 ```
 
 You can also plot sample identification along side the section. and combine them with the patchwork package.
 
 ```{r example_combined_sample_plot, fig.width=5, fig.height=6, out.width='62.5%'}
 library(patchwork)
-p1 <- ggstrat(df = data_strat, stratsection_name = '21LSHD02')
-p2 <- ggstrat_label(df = data_strat, stratsection_name = '21LSHD02')
+p1 <- ggstrat(df = data_strat, section_name = '21LSHD02')
+p2 <- ggstrat_label(df = data_strat, section_name = '21LSHD02')
 
 p1 + p2
 ```

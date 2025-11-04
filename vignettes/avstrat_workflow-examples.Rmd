@@ -96,12 +96,12 @@ You can make a simple grainsize-depth section with either increasing or decreasi
 
 ```{r basic-plots, fig.width=9, fig.height=6}
 grainsize_increasing <- ggstrat(df = mydata, 
-                                stratsection_name = "21LSHD02")
+                                section_name = "21LSHD02")
 grainsize_decreasing <- ggstrat(df = mydata, 
-                                stratsection_name = "21LSHD02", 
+                                section_name = "21LSHD02", 
                                 grainsize_direction = "decreasing")
 grainsize_column <- ggstrat_column(df = mydata, 
-                                stratsection_name = "21LSHD02")
+                                section_name = "21LSHD02")
 grainsize_increasing + grainsize_decreasing + grainsize_column
 ```
 
@@ -109,7 +109,7 @@ The `ggstrat()` function also let's you choose different labels for the x-axis w
 
 ```{r zoomed-plot, fig.width=6, fig.height=6}
 sample_label <- ggstrat_label(df = mydata, 
-                                stratsection_name = "21LSHD02")
+                                section_name = "21LSHD02")
 grainsize_increasing + sample_label
 ```
 
@@ -125,13 +125,13 @@ The app defaults to a combined ggstrat() + ggstrat_label() plot showing SampleID
 
 ```{r, eval=FALSE}
 mystratplot <- function(df, 
-                        stratsection_name) {
-  ggstrat(df = df, stratsection_name = {{ stratsection_name }}) +
+                        section_name) {
+  ggstrat(df = df, section_name = {{ section_name }}) +
     theme(plot.margin = unit(c(0.1, 0.1, 0.1, 0.1), "cm")) +
-  ggstrat_label(df = df, stratsection_name = {{ stratsection_name }}, 
+  ggstrat_label(df = df, section_name = {{ section_name }}, 
                                label = "SampleID") +
     theme(plot.margin = unit(c(0.1, 1.5, 0.1, 0.1), "cm")) +
-  ggstrat_label(df = df, stratsection_name = {{ stratsection_name }}, 
+  ggstrat_label(df = df, section_name = {{ section_name }}, 
                                 label = "volcano_name") +
     theme(plot.margin = unit(c(0.1, 0.5, 0.1, 0.1), "cm")) +
     plot_layout(guides='collect') & theme(legend.position='bottom')

@@ -6,7 +6,7 @@
 \usage{
 ggstrat(
   df,
-  stratsection_name,
+  section_name,
   grainsize_direction = c("increasing", "decreasing"),
   grainsize_labs = gs_volc_abbr,
   use_theme = NULL,
@@ -25,7 +25,7 @@ ggstrat(
 Must include columns \code{stratsection_name}, \code{stratlayer_order},
 \code{grainsize}, \code{depth}, and \code{stratlayer_type}.}
 
-\item{stratsection_name}{Character string giving the section name to filter.}
+\item{section_name}{Character string giving the section name to filter "stratsection_name".}
 
 \item{grainsize_direction}{Character string, one of \code{"increasing"} or
 \code{"decreasing"}. Controls the numeric mapping of grain sizes:
@@ -76,5 +76,5 @@ Uses ggplot2 to create a grainsize vs. depth stratigraphic section plot.
 \examples{
 example_data_strat |>
  add_depths() |>
- ggstrat(stratsection_name = "21LSHD02")
+ ggstrat(section_name = "21LSHD02")
 }
