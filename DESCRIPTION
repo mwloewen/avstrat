@@ -12,6 +12,9 @@ Description: Tools for data processing and generating stratigraphic sections
     are needed for interpreting eruptive histories, but the methods are applicable
     to any sediment stratigraphy project. 
 License: CC0
+Copyright: This software is in the public domain because it contains materials
+    that originally came from the United States Geological Survey, an agency of
+    the United States Department of Interior. 
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.3

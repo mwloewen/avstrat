@@ -128,13 +128,12 @@ path <- system.file("extdata", "example_inputs.xlsx",
   package = "avstrat"
 )
 
-# Read them with readxl (only if readxl is available)
-if (requireNamespace("readxl", quietly = TRUE)) {
+# Read them with readxl
+library(readxl)
   stations <- readxl::read_xlsx(path, sheet = "stations")
   sections <- readxl::read_xlsx(path, sheet = "sections")
   layers <- readxl::read_xlsx(path, sheet = "layers")
   samples <- readxl::read_xlsx(path, sheet = "samples_layer")
-  }
 
   load_stratdata_indiv(stations_upload = stations,
                        sections_upload = sections,

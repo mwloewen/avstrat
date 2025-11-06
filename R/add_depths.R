@@ -154,7 +154,7 @@ add_depths <- function(df) {
                     !is.na(.data$depth_top) & !is.na(.data$depth_bottom) &
                     .data$depth_top >= .data$depth_bottom)
   if (nrow(bad_depths) > 0) {
-    stop("Invalid depth ranges (depth_top >= depth_bottom):\n",
+    stop("Invalid depth ranges (depth_top > depth_bottom):\n",
          paste(bad_depths$stratsection_name, bad_depths$stratlayer_name, collapse = "\n"))
   }
 
