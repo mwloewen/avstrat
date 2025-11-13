@@ -15,11 +15,11 @@ following columns are required depending on the method:
 \item \code{stratsection_name}: Unique identity of the section (repeated for each layer).
 \item \code{stratlayer_name}: Unique identity of the layer.
 \item \code{stratmeasuremethod}: One of \code{"order and thickness"} or \code{"start and stop depth"}.
+\item \code{stratlayer_order_start_at_top}: Logical, does ordering start at the top (\code{TRUE}) or bottom (\code{FALSE})? For "start and stop depth", this defines if the reference "depth" is the top or bottom of the section.
 }
 
 \strong{If \code{stratmeasuremethod == "order and thickness"}}
 \itemize{
-\item \code{stratlayer_order_start_at_top}: Logical, does ordering start at the top (\code{TRUE}) or bottom (\code{FALSE})?
 \item \code{stratlayer_order}: Integer order of layers within the section.
 \item \code{thickness_units}: One of \code{"meters"}, \code{"centimeters"}, \code{"millimeters"}.
 \item At least one of \code{thickness_typical}, \code{thickness_min}, or \code{thickness_max}.

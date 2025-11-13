@@ -27,7 +27,7 @@ in order to work with \code{avstrat} functions:
 \item \code{station_id}: UniqueID for the station, must match an existing value in station_upload.
 \item \code{stratsection_name}: Unique identity of the section.
 \item \code{stratmeasuremethod}: One of \code{"order and thickness"} or \code{"start and stop depth"}.
-\item \code{stratlayer_order_start_at_top}: Logical, does ordering start at the top (\code{TRUE}) or bottom (\code{FALSE})?
+\item \code{stratlayer_order_start_at_top}: Logical, does ordering start at the top (\code{TRUE}) or bottom (\code{FALSE})? For "start and stop depth", this defines if the reference "depth" is the top or bottom of the section.
 }}
 
 \item{layers_upload}{A data frame with "layer" metadata. The following columns are required

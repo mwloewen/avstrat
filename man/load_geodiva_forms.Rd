@@ -36,12 +36,11 @@ path_layers <- system.file("extdata", "example_layers_upload_2024.xlsx",
   package = "avstrat"
 )
 
-# Read them with readxl (only if readxl is available)
-if (requireNamespace("readxl", quietly = TRUE)) {
+# Read them with readxl
+library(readxl)
   station_sample_upload <- readxl::read_xlsx(path_samples, sheet = "Data")
   layer_upload <- readxl::read_xlsx(path_layers, sheet = "Data")
 
   result <- load_geodiva_forms(station_sample_upload, layer_upload)
   head(result)  # result is a data frame
-}
 }

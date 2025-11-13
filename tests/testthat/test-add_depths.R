@@ -27,8 +27,6 @@ test_that("add_depths computes correct maximum depths for known sections", {
   expect_equal(actual[names(expected)], expected, tolerance = 1e-6)
 })
 
-
-
 test_that("missing required columns triggers error", {
   df <- data.frame(stratsection_name = "s1") # missing stratlayer_name, stratmeasuremethod
   expect_error(add_depths(df), "Missing required columns")
@@ -37,8 +35,9 @@ test_that("missing required columns triggers error", {
 test_that("rows with stratsection_name but no stratmeasuremethod error", {
   df <- data.frame(
     stratsection_name = "s1",
-    stratlayer_name = "l1",
-    stratmeasuremethod = NA
+    stratlayer_name   = "l1",
+    stratmeasuremethod = NA,
+    stratlayer_order_start_at_top = TRUE
   )
   expect_error(add_depths(df), "must define stratmeasuremethod")
 })
@@ -47,9 +46,30 @@ test_that("invalid stratmeasuremethod triggers error", {
   df <- data.frame(
     stratsection_name = "s1",
     stratlayer_name = "l1",
-    stratmeasuremethod = "nonsense"
+    stratmeasuremethod = "nonsense",
+    stratlayer_order_start_at_top = TRUE
   )
   expect_error(add_depths(df), "Invalid stratmeasuremethod")
+})
+
+test_that("missing stratlayer_order_start_at_top triggers error", {
+  df <- data.frame(
+    stratsection_name = "s1",
+    stratlayer_name = "l1",
+    stratmeasuremethod = "order and thickness",
+    stratlayer_order_start_at_top = NA
+  )
+  expect_error(add_depths(df), "must define stratlayer_order_start_at_top")
+})
+
+test_that("invalid stratlayer_order_start_at_top triggers error", {
+  df <- data.frame(
+    stratsection_name = "s1",
+    stratlayer_name = "l1",
+    stratmeasuremethod = "order and thickness",
+    stratlayer_order_start_at_top = "nonsense"
+  )
+  expect_error(add_depths(df), "Invalid stratlayer_order_start_at_top")
 })
 
 test_that("invalid units trigger error", {
@@ -57,6 +77,7 @@ test_that("invalid units trigger error", {
     stratsection_name = "s1",
     stratlayer_name = "l1",
     stratmeasuremethod = "order and thickness",
+    stratlayer_order_start_at_top = TRUE,
     stratlayer_order = 1,
     thickness_units = "yards",  # invalid
     thickness_typical = 10
@@ -69,6 +90,7 @@ test_that("missing depth_top/depth_bottom for start/stop triggers error", {
     stratsection_name = "s1",
     stratlayer_name = "l1",
     stratmeasuremethod = "start and stop depth",
+    stratlayer_order_start_at_top = TRUE,
     depth_units = "cm",
     depth_top = NA,
     depth_bottom = 10
@@ -81,6 +103,7 @@ test_that("missing thickness/order for order+thickness triggers error", {
     stratsection_name = "s1",
     stratlayer_name = "l1",
     stratmeasuremethod = "order and thickness",
+    stratlayer_order_start_at_top = TRUE,
     stratlayer_order = NA,
     thickness_units = NA,
     thickness_typical = NA,
@@ -95,6 +118,7 @@ test_that("duplicate stratlayer_order triggers error", {
     stratsection_name = c("s1", "s1"),
     stratlayer_name = c("l1", "l2"),
     stratmeasuremethod = "order and thickness",
+    stratlayer_order_start_at_top = TRUE,
     stratlayer_order = c(1, 1),  # duplicate
     thickness_units = "cm",
     thickness_typical = c(10, 20),
@@ -103,14 +127,28 @@ test_that("duplicate stratlayer_order triggers error", {
   expect_error(add_depths(df), "Duplicate stratlayer_order")
 })
 
-test_that("depth_top >= depth_bottom triggers error", {
+test_that("depth_top >= depth_bottom triggers error when start_at_top = TRUE", {
   df <- data.frame(
     stratsection_name = "s1",
     stratlayer_name = "l1",
     stratmeasuremethod = "start and stop depth",
+    stratlayer_order_start_at_top = TRUE,
     depth_units = "cm",
     depth_top = 20,
     depth_bottom = 10
+  )
+  expect_error(add_depths(df), "Invalid depth ranges")
+})
+
+test_that("depth_top <= depth_bottom triggers error when start_at_top = FALSE", {
+  df <- data.frame(
+    stratsection_name = "s1",
+    stratlayer_name = "l1",
+    stratmeasuremethod = "start and stop depth",
+    stratlayer_order_start_at_top = FALSE,
+    depth_units = "cm",
+    depth_top = 10,
+    depth_bottom = 20
   )
   expect_error(add_depths(df), "Invalid depth ranges")
 })

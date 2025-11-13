@@ -15,9 +15,9 @@
 #'   - `stratsection_name`: Unique identity of the section (repeated for each layer).
 #'   - `stratlayer_name`: Unique identity of the layer.
 #'   - `stratmeasuremethod`: One of `"order and thickness"` or `"start and stop depth"`.
+#'   - `stratlayer_order_start_at_top`: Logical, does ordering start at the top (`TRUE`) or bottom (`FALSE`)? For "start and stop depth", this defines if the reference "depth" is the top or bottom of the section.
 #'
 #'   **If `stratmeasuremethod == "order and thickness"`**
-#'   - `stratlayer_order_start_at_top`: Logical, does ordering start at the top (`TRUE`) or bottom (`FALSE`)?
 #'   - `stratlayer_order`: Integer order of layers within the section.
 #'   - `thickness_units`: One of `"meters"`, `"centimeters"`, `"millimeters"`.
 #'   - At least one of `thickness_typical`, `thickness_min`, or `thickness_max`.
@@ -61,7 +61,7 @@
 #'
 add_depths <- function(df) {
   # Add required columns check
-  required_always <- c("stratsection_name", "stratlayer_name", "stratmeasuremethod")
+  required_always <- c("stratsection_name", "stratlayer_name", "stratmeasuremethod", "stratlayer_order_start_at_top")
   missing_always <- setdiff(required_always, names(df))
   if (length(missing_always) > 0) {
     stop("Missing required columns: ", paste(missing_always, collapse = ", "))
@@ -69,7 +69,7 @@ add_depths <- function(df) {
 
   # Add missing expected columns with NA values
   other_expected_headers <- c(
-    "stratlayer_order_start_at_top", "thickness_units", "thickness_typical",
+    "thickness_units", "thickness_typical",
     "thickness_min", "thickness_max", "depth_units", "depth_top",
     "depth_bottom", "stratlayer_order"
   )
@@ -86,6 +86,19 @@ add_depths <- function(df) {
   bad_methods <- setdiff(unique(na.omit(df$stratmeasuremethod)), valid_methods)
   if (length(bad_methods) > 0) {
     stop("Invalid stratmeasuremethod values: ", paste(bad_methods, collapse = ", "))
+  }
+
+  # error if stratsection_name present but no stratlayer_order_start_at_top
+  if (any(!is.na(df$stratsection_name) & is.na(df$stratlayer_order_start_at_top))) {
+    stop("Rows with stratsection_name must define stratlayer_order_start_at_top.")
+  }
+
+  # error if invalid stratlayer_order_start_at_top
+  valid_flags <- c(TRUE, FALSE)  # logical values
+  bad_start_at_top <- setdiff(unique(na.omit(df$stratlayer_order_start_at_top)), valid_flags)
+  if (length(bad_start_at_top) > 0) {
+    stop("Invalid stratlayer_order_start_at_top values: ",
+         paste(bad_start_at_top, collapse = ", "))
   }
 
   # error if invalid units
@@ -148,13 +161,19 @@ add_depths <- function(df) {
          paste(dup_orders$stratsection_name, dup_orders$stratlayer_order, sep = ":", collapse = "\n"))
   }
 
-  # Depth_top < Depth_bottom
+  # Depth range validation
   bad_depths <- df |>
-    dplyr::filter(.data$stratmeasuremethod == "start and stop depth" &
-                    !is.na(.data$depth_top) & !is.na(.data$depth_bottom) &
-                    .data$depth_top >= .data$depth_bottom)
+    dplyr::filter(.data$stratmeasuremethod == "start and stop depth") |>
+    tidyr::drop_na(dplyr::all_of(c("depth_top", "depth_bottom", "depth_units"))) |>
+    dplyr::mutate(start_at_top = as.logical(.data[["stratlayer_order_start_at_top"]])) |>
+    dplyr::filter(
+      (is.na(.data[["start_at_top"]]) & .data[["depth_top"]] >= .data[["depth_bottom"]]) |
+        (!is.na(.data[["start_at_top"]]) & .data[["start_at_top"]] & .data[["depth_top"]] > .data[["depth_bottom"]]) |
+        (!is.na(.data[["start_at_top"]]) & !.data[["start_at_top"]] & .data[["depth_top"]] < .data[["depth_bottom"]])
+    )
+
   if (nrow(bad_depths) > 0) {
-    stop("Invalid depth ranges (depth_top > depth_bottom):\n",
+    stop("Invalid depth ranges:\n",
          paste(bad_depths$stratsection_name, bad_depths$stratlayer_name, collapse = "\n"))
   }
 
@@ -216,16 +235,38 @@ add_depths <- function(df) {
     ) |>
     tidyr::drop_na(dplyr::all_of("Depth_middle")),
 
+
   # --- Method 2: start and stop depth ---
   df |>
     dplyr::filter(.data$stratmeasuremethod == "start and stop depth") |>
     dplyr::mutate(
       depth_top_cm    = convert_to_cm(.data[["depth_top"]], .data[["depth_units"]]),
       depth_bottom_cm = convert_to_cm(.data[["depth_bottom"]], .data[["depth_units"]]),
-      Depth_top       = .data[["depth_top_cm"]],
-      Depth_bottom    = .data[["depth_bottom_cm"]],
-      Depth_middle    = .data[["Depth_top"]] + (.data[["Depth_bottom"]] - .data[["Depth_top"]]) / 2
-    )
+      start_at_top    = as.logical(.data[["stratlayer_order_start_at_top"]])
+    ) |>
+    dplyr::group_by(.data$stratsection_name) |>
+    dplyr::mutate(
+      # For inversion, use the maximum uploaded TOP depth per section
+      section_height_cm = max(.data[["depth_top_cm"]], na.rm = TRUE),
+      Depth_top = dplyr::if_else(
+        .data[["start_at_top"]],
+        .data[["depth_top_cm"]],
+        .data[["section_height_cm"]] - .data[["depth_top_cm"]]
+      ),
+      Depth_bottom = dplyr::if_else(
+        .data[["start_at_top"]],
+        .data[["depth_bottom_cm"]],
+        .data[["section_height_cm"]] - .data[["depth_bottom_cm"]]
+      ),
+      Depth_middle = .data[["Depth_top"]] + (.data[["Depth_bottom"]] - .data[["Depth_top"]]) / 2
+    ) |>
+    dplyr::ungroup() |>
+    dplyr::mutate(
+      # Final invariant: outputs must have Depth_top < Depth_bottom
+      .depth_ok = .data[["Depth_top"]] < .data[["Depth_bottom"]]
+    ) |>
+    dplyr::filter(.data[[".depth_ok"]]) |>
+    dplyr::select(-.data[[".depth_ok"]])
   ) |>
   # Clean up columns not needed going forward
   dplyr::select(

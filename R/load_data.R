@@ -17,7 +17,7 @@
 #'   - `station_id`: UniqueID for the station, must match an existing value in station_upload.
 #'   - `stratsection_name`: Unique identity of the section.
 #'   - `stratmeasuremethod`: One of `"order and thickness"` or `"start and stop depth"`.
-#'   - `stratlayer_order_start_at_top`: Logical, does ordering start at the top (`TRUE`) or bottom (`FALSE`)?
+#'   - `stratlayer_order_start_at_top`: Logical, does ordering start at the top (`TRUE`) or bottom (`FALSE`)? For "start and stop depth", this defines if the reference "depth" is the top or bottom of the section.
 #' @param layers_upload A data frame with "layer" metadata. The following columns are required
 #'   in order to work with `avstrat` functions:
 #'   - `stratsection_name`: Unique identity of the section, must match an existing value in section_upload.
@@ -242,14 +242,13 @@ load_stratdata_indiv <- function(stations_upload,
 #'   package = "avstrat"
 #' )
 #'
-#' # Read them with readxl (only if readxl is available)
-#' if (requireNamespace("readxl", quietly = TRUE)) {
+#' # Read them with readxl
+#' library(readxl)
 #'   station_sample_upload <- readxl::read_xlsx(path_samples, sheet = "Data")
 #'   layer_upload <- readxl::read_xlsx(path_layers, sheet = "Data")
 #'
 #'   result <- load_geodiva_forms(station_sample_upload, layer_upload)
 #'   head(result)  # result is a data frame
-#' }
 load_geodiva_forms <- function(station_sample_upload,
                                layer_upload) {
   # Get a clean station list
