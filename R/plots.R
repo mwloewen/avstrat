@@ -285,6 +285,11 @@ ggstrat_label <- function(df,
   # Second, filter a data frame with only samples to plot
   label_plot <- data_plot |>
     tidyr::drop_na(dplyr::all_of(label))
+  # Third, decide ylim: if NULL, compute from data
+  if (is.null(ylim)) {
+    ylim <- c(max(data_plot$Depth_bottom, na.rm = TRUE),
+              min(data_plot$Depth_top,    na.rm = TRUE))
+  }
   # Now we can make the plot
   plot <- ggplot(data = data_plot) +
     geom_text(data = label_plot,
@@ -303,7 +308,7 @@ ggstrat_label <- function(df,
       n.breaks = ybreaks
     ) +
     coord_cartesian(
-      ylim = c(max(data_plot$Depth_bottom), min(data_plot$Depth_top)), expand = F,
+      ylim = ylim, expand = F,
       xlim = c(0, 5),
       clip = "off"
     ) +
