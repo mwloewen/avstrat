@@ -125,7 +125,7 @@ result_depths <- result |>
   add_depths()
 
 result |>
-  ggstrat(stratsection_name = "fake2")
+  ggstrat(stratsection_name = "21LSHD02")
 library(ggplot2)
 theme_set(theme_avstrat())
 result |>
@@ -134,3 +134,9 @@ result |>
 
 result |>
   run_ggstrat_app()
+
+
+# Simple plot check
+library(avstrat)
+ggstrat(example_data_strat,
+             section_name = "21LSHD02")

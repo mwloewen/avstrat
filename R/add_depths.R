@@ -94,23 +94,29 @@ add_depths <- function(df) {
   }
 
   # error if invalid stratlayer_order_start_at_top
-  valid_flags <- c(TRUE, FALSE)  # logical values
+  valid_flags <- c(TRUE, FALSE) # logical values
   bad_start_at_top <- setdiff(unique(na.omit(df$stratlayer_order_start_at_top)), valid_flags)
   if (length(bad_start_at_top) > 0) {
-    stop("Invalid stratlayer_order_start_at_top values: ",
-         paste(bad_start_at_top, collapse = ", "))
+    stop(
+      "Invalid stratlayer_order_start_at_top values: ",
+      paste(bad_start_at_top, collapse = ", ")
+    )
   }
 
   # error if invalid units
-  valid_units <- c("m", "meter", "meters", "cm", "centimeter", "centimeters",
-                   "mm", "millimeter", "millimeters")
+  valid_units <- c(
+    "m", "meter", "meters", "cm", "centimeter", "centimeters",
+    "mm", "millimeter", "millimeters"
+  )
   bad_units <- df |>
     dplyr::filter(!is.na(.data$thickness_units) & !.data$thickness_units %in% valid_units |
-                    !is.na(.data$depth_units) & !.data$depth_units %in% valid_units)
+      !is.na(.data$depth_units) & !.data$depth_units %in% valid_units)
   if (nrow(bad_units) > 0) {
-    stop("Invalid units detected in thickness_units or depth_units.\n",
-         "Problematic rows:\n",
-         paste(bad_units$stratsection_name, bad_units$stratlayer_name, sep = ":", collapse = "\n"))
+    stop(
+      "Invalid units detected in thickness_units or depth_units.\n",
+      "Problematic rows:\n",
+      paste(bad_units$stratsection_name, bad_units$stratlayer_name, sep = ":", collapse = "\n")
+    )
   }
 
   # error if depth_top and depth_bottom not present when stratmeasuremethod == "start and stop depth"
@@ -157,8 +163,10 @@ add_depths <- function(df) {
     dplyr::count(.data$stratsection_name, .data$stratlayer_order) |>
     dplyr::filter(.data$n > 1)
   if (nrow(dup_orders) > 0) {
-    stop("Duplicate stratlayer_order values within sections:\n",
-         paste(dup_orders$stratsection_name, dup_orders$stratlayer_order, sep = ":", collapse = "\n"))
+    stop(
+      "Duplicate stratlayer_order values within sections:\n",
+      paste(dup_orders$stratsection_name, dup_orders$stratlayer_order, sep = ":", collapse = "\n")
+    )
   }
 
   # Depth range validation
@@ -173,8 +181,10 @@ add_depths <- function(df) {
     )
 
   if (nrow(bad_depths) > 0) {
-    stop("Invalid depth ranges:\n",
-         paste(bad_depths$stratsection_name, bad_depths$stratlayer_name, collapse = "\n"))
+    stop(
+      "Invalid depth ranges:\n",
+      paste(bad_depths$stratsection_name, bad_depths$stratlayer_name, collapse = "\n")
+    )
   }
 
 
@@ -188,91 +198,112 @@ add_depths <- function(df) {
     )
   }
 
-  # branch by stratmeasuremethod
-  dplyr::bind_rows(
-
   # --- Method 1: order and thickness ---
-  df |>
-    dplyr::filter(.data$stratmeasuremethod == "order and thickness") |>
-    tidyr::drop_na(dplyr::all_of("stratlayer_order_start_at_top")) |>
-    dplyr::mutate(
-      thickness_defining_cm = convert_to_cm(.data[["thickness_typical"]], .data[["thickness_units"]]),
-      thickness_min_cm      = convert_to_cm(.data[["thickness_min"]], .data[["thickness_units"]]),
-      thickness_max_cm      = convert_to_cm(.data[["thickness_max"]], .data[["thickness_units"]])
-    ) |>
-    dplyr::mutate(
-      thickness_plot = dplyr::case_when(
-        !is.na(.data[["thickness_defining_cm"]]) ~ as.numeric(.data[["thickness_defining_cm"]]),
-        is.na(.data[["thickness_defining_cm"]]) & !is.na(.data[["thickness_min_cm"]]) & !is.na(.data[["thickness_max_cm"]]) ~
-          (as.numeric(.data[["thickness_min_cm"]]) + as.numeric(.data[["thickness_max_cm"]])) / 2,
-        is.na(.data[["thickness_defining_cm"]]) & !is.na(.data[["thickness_min_cm"]]) & is.na(.data[["thickness_max_cm"]]) ~
-          as.numeric(.data[["thickness_min_cm"]]),
-        is.na(.data[["thickness_defining_cm"]]) & is.na(.data[["thickness_min_cm"]]) & !is.na(.data[["thickness_max_cm"]]) ~
-          as.numeric(.data[["thickness_max_cm"]]),
-        TRUE ~ NA_real_
-      ),
-      thickness_plot_warning = dplyr::if_else(
-        is.na(.data[["thickness_plot"]]),
-        paste0("No thickness to plot for ", .data[["stratlayer_name"]]),
-        NA_character_
-      )
-    ) |>
-    tidyr::drop_na(dplyr::all_of("thickness_plot")) |>
-    dplyr::group_by(.data[["stratsection_name"]]) |>
-    dplyr::mutate(stratlayer_order_start_at_top = as.logical(.data[["stratlayer_order_start_at_top"]])) |>
-    dplyr::arrange(
-      dplyr::if_else(
-        .data[["stratlayer_order_start_at_top"]],
-        as.numeric(.data[["stratlayer_order"]]),
-        -as.numeric(.data[["stratlayer_order"]])   # negate to reverse
-      ),
-      .by_group = TRUE
-    ) |>
-    dplyr::mutate(
-      Depth_bottom = cumsum(.data[["thickness_plot"]]),
-      Depth_top    = .data[["Depth_bottom"]] - .data[["thickness_plot"]],
-      Depth_middle = .data[["Depth_top"]] + (.data[["Depth_bottom"]] - .data[["Depth_top"]]) / 2
-    ) |>
-    tidyr::drop_na(dplyr::all_of("Depth_middle")),
+  df_orderthickness <- df |>
+    dplyr::filter(.data$stratmeasuremethod == "order and thickness")
 
+  if (nrow(df_orderthickness) > 0L) {
+    df_orderthickness <- df_orderthickness |>
+      tidyr::drop_na(dplyr::all_of("stratlayer_order_start_at_top")) |>
+      dplyr::mutate(
+        thickness_defining_cm = convert_to_cm(.data[["thickness_typical"]], .data[["thickness_units"]]),
+        thickness_min_cm      = convert_to_cm(.data[["thickness_min"]], .data[["thickness_units"]]),
+        thickness_max_cm      = convert_to_cm(.data[["thickness_max"]], .data[["thickness_units"]])
+      ) |>
+      dplyr::mutate(
+        thickness_plot = dplyr::case_when(
+          !is.na(.data[["thickness_defining_cm"]]) ~ as.numeric(.data[["thickness_defining_cm"]]),
+          is.na(.data[["thickness_defining_cm"]]) & !is.na(.data[["thickness_min_cm"]]) & !is.na(.data[["thickness_max_cm"]]) ~
+            (as.numeric(.data[["thickness_min_cm"]]) + as.numeric(.data[["thickness_max_cm"]])) / 2,
+          is.na(.data[["thickness_defining_cm"]]) & !is.na(.data[["thickness_min_cm"]]) & is.na(.data[["thickness_max_cm"]]) ~
+            as.numeric(.data[["thickness_min_cm"]]),
+          is.na(.data[["thickness_defining_cm"]]) & is.na(.data[["thickness_min_cm"]]) & !is.na(.data[["thickness_max_cm"]]) ~
+            as.numeric(.data[["thickness_max_cm"]]),
+          TRUE ~ NA_real_
+        ),
+        thickness_plot_warning = dplyr::if_else(
+          is.na(.data[["thickness_plot"]]),
+          paste0("No thickness to plot for ", .data[["stratlayer_name"]]),
+          NA_character_
+        )
+      ) |>
+      tidyr::drop_na(dplyr::all_of("thickness_plot")) |>
+      dplyr::group_by(.data[["stratsection_name"]]) |>
+      dplyr::mutate(stratlayer_order_start_at_top = as.logical(.data[["stratlayer_order_start_at_top"]])) |>
+      dplyr::arrange(
+        dplyr::if_else(
+          .data[["stratlayer_order_start_at_top"]],
+          as.numeric(.data[["stratlayer_order"]]),
+          -as.numeric(.data[["stratlayer_order"]]) # negate to reverse
+        ),
+        .by_group = TRUE
+      ) |>
+      dplyr::mutate(
+        Depth_bottom = cumsum(.data[["thickness_plot"]]),
+        Depth_top    = .data[["Depth_bottom"]] - .data[["thickness_plot"]],
+        Depth_middle = .data[["Depth_top"]] + (.data[["Depth_bottom"]] - .data[["Depth_top"]]) / 2
+      ) |>
+      tidyr::drop_na(dplyr::all_of("Depth_middle"))
+  } else {
+    # Ensure Depth_* columns exist even when there are no rows
+    df_orderthickness <- df_orderthickness |>
+      dplyr::mutate(
+        Depth_top = NA_real_, Depth_bottom = NA_real_, Depth_middle = NA_real_
+      )
+  }
 
   # --- Method 2: start and stop depth ---
-  df |>
-    dplyr::filter(.data$stratmeasuremethod == "start and stop depth") |>
-    dplyr::mutate(
-      depth_top_cm    = convert_to_cm(.data[["depth_top"]], .data[["depth_units"]]),
-      depth_bottom_cm = convert_to_cm(.data[["depth_bottom"]], .data[["depth_units"]]),
-      start_at_top    = as.logical(.data[["stratlayer_order_start_at_top"]])
-    ) |>
-    dplyr::group_by(.data$stratsection_name) |>
-    dplyr::mutate(
-      # For inversion, use the maximum uploaded TOP depth per section
-      section_height_cm = max(.data[["depth_top_cm"]], na.rm = TRUE),
-      Depth_top = dplyr::if_else(
-        .data[["start_at_top"]],
-        .data[["depth_top_cm"]],
-        .data[["section_height_cm"]] - .data[["depth_top_cm"]]
-      ),
-      Depth_bottom = dplyr::if_else(
-        .data[["start_at_top"]],
-        .data[["depth_bottom_cm"]],
-        .data[["section_height_cm"]] - .data[["depth_bottom_cm"]]
-      ),
-      Depth_middle = .data[["Depth_top"]] + (.data[["Depth_bottom"]] - .data[["Depth_top"]]) / 2
-    ) |>
-    dplyr::ungroup() |>
-    dplyr::mutate(
-      # Final invariant: outputs must have Depth_top < Depth_bottom
-      .depth_ok = .data[["Depth_top"]] < .data[["Depth_bottom"]]
-    ) |>
-    dplyr::filter(.data[[".depth_ok"]]) |>
-    dplyr::select(-.data[[".depth_ok"]])
-  ) |>
-  # Clean up columns not needed going forward
-  dplyr::select(
-    -dplyr::any_of(c(
-      "thickness_defining_cm", "thickness_min_cm", "thickness_max_cm", "thickness_plot",
-      "depth_top_cm", "depth_bottom_cm"
-    ))
-  )
+  df_startstopdepth <- df |>
+    dplyr::filter(.data$stratmeasuremethod == "start and stop depth")
+  if (nrow(df_startstopdepth) > 0L) {
+    df_startstopdepth <- df_startstopdepth |>
+      dplyr::mutate(
+        depth_top_cm    = convert_to_cm(.data[["depth_top"]], .data[["depth_units"]]),
+        depth_bottom_cm = convert_to_cm(.data[["depth_bottom"]], .data[["depth_units"]]),
+        start_at_top    = as.logical(.data[["stratlayer_order_start_at_top"]])
+      ) |>
+      dplyr::group_by(.data$stratsection_name) |>
+      dplyr::mutate(
+        # For inversion, use the maximum uploaded TOP depth per section
+        section_height_cm = dplyr::if_else(
+          all(is.na(.data[["depth_top_cm"]])),
+          NA_real_,
+          max(.data[["depth_top_cm"]], na.rm = TRUE)
+        ),
+        Depth_top = dplyr::if_else(
+          .data[["start_at_top"]],
+          .data[["depth_top_cm"]],
+          .data[["section_height_cm"]] - .data[["depth_top_cm"]]
+        ),
+        Depth_bottom = dplyr::if_else(
+          .data[["start_at_top"]],
+          .data[["depth_bottom_cm"]],
+          .data[["section_height_cm"]] - .data[["depth_bottom_cm"]]
+        ),
+        Depth_middle = .data[["Depth_top"]] + (.data[["Depth_bottom"]] - .data[["Depth_top"]]) / 2
+      ) |>
+      dplyr::ungroup() |>
+      dplyr::mutate(
+        # Final invariant: outputs must have Depth_top < Depth_bottom
+        .depth_ok = .data[["Depth_top"]] < .data[["Depth_bottom"]]
+      ) |>
+      dplyr::filter(.data[[".depth_ok"]]) |>
+      dplyr::select(-.data[[".depth_ok"]])
+  } else {
+    # Ensure Depth_* columns exist even when there are no rows
+    df_startstopdepth <- df_startstopdepth |>
+      dplyr::mutate(
+        Depth_top = NA_real_, Depth_bottom = NA_real_, Depth_middle = NA_real_
+      )
+  }
+
+  # Put things back to together again
+  df_final <- dplyr::bind_rows(df_orderthickness, df_startstopdepth) |>
+    # Clean up columns not needed going forward
+    dplyr::select(
+      -dplyr::any_of(c(
+        "thickness_defining_cm", "thickness_min_cm", "thickness_max_cm", "thickness_plot",
+        "depth_top_cm", "depth_bottom_cm"
+      ))
+    )
 }
