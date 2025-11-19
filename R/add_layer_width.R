@@ -75,7 +75,7 @@ add_layer_width <- function(df, grainsize_direction = c("increasing", "decreasin
     ## Depth consistency
     bad_depths <- df |>
     dplyr::filter(!is.na(.data$Depth_top) & !is.na(.data$Depth_bottom) &
-                    .data$Depth_top >= .data$Depth_bottom)
+                    .data$Depth_top > .data$Depth_bottom)
   if (nrow(bad_depths) > 0) {
     stop("Invalid depth ranges (Depth_top >= Depth_bottom):\n",
          paste(bad_depths$stratsection_name, bad_depths$stratlayer_name, collapse = "\n"))
