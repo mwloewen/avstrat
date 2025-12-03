@@ -99,7 +99,7 @@ ggstrat <- function(df,
 
   plot <- ggplot(data_plot) +
     geom_polygon(
-      aes(group = .data[["stratlayer_order"]],
+      aes(group = .data[["stratlayer_name"]],
           x = .data[["grainsize"]],
           y = .data[["depth"]],
           fill = .data[[layer_fill]]),
@@ -191,7 +191,7 @@ ggstrat_column <- function(df,
   plot <- ggplot(data = data_plot) +
     geom_rect(
       aes(
-        group = .data[["stratlayer_order"]], xmin = 0, xmax = 0.1,
+        group = .data[["stratlayer_name"]], xmin = 0, xmax = 0.1,
         ymin = .data[["Depth_bottom"]], ymax = .data[["Depth_top"]],
         fill = factor(.data[[layer_fill]])
       ), # Fix: stratlayer_order might not be defined for depth explicit template
