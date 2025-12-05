@@ -323,7 +323,7 @@ load_geodiva_forms <- function(station_sample_upload,
         "section_notes"
       ))
     ) |>
-    dplyr::filter(!is.na(.data[["stratlayer_order"]]))
+    dplyr::filter(!is.na(.data[["stratlayer_name"]]))
 
   # Join the tables
   data_strat <- layers |>
