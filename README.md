@@ -22,6 +22,8 @@ data processing logic `add_depths()` and `add_layer_widths()` enable
 motivated users to create custom visualizations. Various load_data
 functions facilitate ingesting from stratigraphic layer data templates.
 
+Test-Moved to Gitlab.
+
 ## Installation
 
 You can install the development version of avstrat from
