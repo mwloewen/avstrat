@@ -1,0 +1,9 @@
+bibentry(
+  bibtype  = "Manual",
+  title    = "avstrat: Tools for Generating Stratigraphic Sections",
+  version   = "0.1.0",
+  author = person("Matthew", "Loewen", email = "mloewen@usgs.gov", role = c("aut", "cre"), comment = c(ORCID = "0000-0002-5621-285X")),
+  publisher  = "U.S. Geological Survey",
+  year     = 2026,
+  doi      = "10.5066/P14PYILN"
+)

@@ -2,8 +2,8 @@ Package: avstrat
 Title: Tools for Generating Stratigraphic Sections
 Version: 0.1.0
 Authors@R: 
-    person("Matt", "Loewen", 
-    email = "mloewen@gmail.com", 
+    person("Matthew", "Loewen", 
+    email = "mloewen@usgs.gov", 
     role = c("aut", "cre"),
     comment = c(ORCID = "0000-0002-5621-285X"))
 Description: Tools for data processing and generating stratigraphic sections 
