@@ -46,8 +46,8 @@
 #'   \item{LocationDesc}{Character. Location description.}
 #'   \item{SampleID}{List. Nested list column of sample IDs per layer.}
 #' }
-#' @source <https://doi.org/10.14509/31084>
-#' @source <https://doi.org/10.14509/31090>
+#' @source <doi.org/10.14509/31084>
+#' @source <doi.org/10.14509/31090>
 "example_data_strat"
 
 #' Example stratigraphic data from individual tables
