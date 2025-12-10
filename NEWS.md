@@ -1,3 +1,3 @@
-# avstrat (development version)
+# avstrat 0.1.0
 
 * Initial CRAN submission.
