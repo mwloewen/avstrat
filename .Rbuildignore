@@ -7,3 +7,4 @@
 ^vignettes/\.quarto$
 ^vignettes/*_files$
 ^codecov\.yml$
+^cran-comments\.md$

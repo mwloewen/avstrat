@@ -5,45 +5,45 @@
 
 Tools for Generating Stratigraphic Sections
 
-<!-- badges: start -->
-
-[![R-CMD-check](https://github.com/mwloewen/avstrat/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/mwloewen/avstrat/actions/workflows/R-CMD-check.yaml)
-
-<!-- badges: end -->
-
 This package provides tools for data processing and generating
 stratigraphic sections for volcanic deposits and tephrastratigraphy.
 Package was developed for studies on Alaska volcanoes (“av”) where
 stratigraphic (“strat”) figures are needed for interpreting eruptive
 histories, but the methods are applicable to any sediment stratigraphy
-project. The primary outputs are ggplot figures of stratigrahaphic
+project. The primary outputs are ggplot figures of stratigraphic
 sections–`ggstrat()`, `ggstrat_column()`, `ggstrat_sampleID()`-but the
 data processing logic `add_depths()` and `add_layer_widths()` enable
 motivated users to create custom visualizations. Various load_data
 functions facilitate ingesting from stratigraphic layer data templates.
 
-Test-Moved to Gitlab.
-
 ## Installation
 
-You can install the development version of avstrat from
-[GitHub](https://github.com/) with:
+You can install avstrat from CRAN \[when/if it is accepted there\] or
+from a downloaded source file off the GitLab approved repository (Code -
+Download source code - tar.gz).
 
 ``` r
 {r eval=FALSE}
+# Option 1: Install from CRAN:
 # install.packages("avstrat") # this will only work once it is on CRAN
 
-# Option 1: Run this if you have a downloaded source file for the package:
+# Option 2: Install from source file:
 install.packages("path/to/avstrat_0.0.0.9000.tar.gz", repos = NULL, type = "source")
 
 # Option 2: Run this if I've added you as a collaborator on GitHub and you have Git and GitHub setup on your system:
-remotes::install_github("mwloewen/avstrat", build_vignettes = TRUE)
+remotes::install_gitlab("mwloewen/avstrat", build_vignettes = TRUE)
 ```
 
-This currently does not work universally, since the repo is currently
-private. I will document installation instructions when it moves to the
-USGS gitlab. This current code will only work once the package has USGS
-software approval and can be listed as public.
+To install the development version, use the ‘remotes’ package.
+
+``` r
+remotes::install_gitlab("vsc/tephra/tools/avstrat", 
+                        host = "code.usgs.gov", 
+                        auth_token = 
+                          "glpat-SVCVmjxUDCazAu264NtZvW86MQp1OjZscQk.01.0z1obzme5",
+                        build_vignettes = TRUE)
+# auth_token will be removed when repo is public
+```
 
 ## Example
 
@@ -67,6 +67,7 @@ stratigraphic plot and use the avstrat theme:
 
 ``` r
 library(ggplot2)
+#> Warning: package 'ggplot2' was built under R version 4.5.2
 library(readxl)
 library(avstrat)
 # Load data
@@ -100,10 +101,13 @@ combine them with the patchwork package.
 
 ``` r
 library(patchwork)
+#> Warning: package 'patchwork' was built under R version 4.5.2
 p1 <- ggstrat(df = data_strat, section_name = '21LSHD02')
 p2 <- ggstrat_label(df = data_strat, section_name = '21LSHD02')
 
 p1 + p2
+#> Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
+#> font family not found in Windows font database
 ```
 
 <img src="man/figures/README-example_combined_sample_plot-1.png" width="62.5%" />
