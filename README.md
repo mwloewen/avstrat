@@ -34,15 +34,13 @@ install.packages("path/to/avstrat_0.0.0.9000.tar.gz", repos = NULL, type = "sour
 remotes::install_gitlab("mwloewen/avstrat", build_vignettes = TRUE)
 ```
 
-To install the development version, use the ‘remotes’ package.
+To install the development version, use the ‘remotes’ package. \[This
+also won’t work until the code is public\].
 
 ``` r
 remotes::install_gitlab("vsc/tephra/tools/avstrat", 
                         host = "code.usgs.gov", 
-                        auth_token = 
-                          "glpat-SVCVmjxUDCazAu264NtZvW86MQp1OjZscQk.01.0z1obzme5",
                         build_vignettes = TRUE)
-# auth_token will be removed when repo is public
 ```
 
 ## Example
@@ -114,7 +112,7 @@ p1 + p2
 
 More examples and demonstration of how to create your own custom plots
 will be provided \[eventually\] in vignettes! Currently, a more detailed
-workflow can be accessed with the intalled package at:
+workflow can be accessed with the installed package at:
 
 ``` r
 vignette("avstrat-workflow-examples", package = "avstrat")
