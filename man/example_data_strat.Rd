@@ -52,9 +52,9 @@ A data frame with 244 rows and 39 columns:
 }
 }
 \source{
-\url{https://doi.org/10.14509/31084}
+<doi.org/10.14509/31084>
 
-\url{https://doi.org/10.14509/31090}
+<doi.org/10.14509/31090>
 }
 \usage{
 example_data_strat
