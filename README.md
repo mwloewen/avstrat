@@ -20,7 +20,7 @@ functions facilitate ingesting from stratigraphic layer data templates.
 
 You can install avstrat from CRAN \[when/if it is accepted there\] or
 from a downloaded source file off the GitLab approved repository (Code -
-Download source code - tar.gz). Tst.
+Download source code - tar.gz).
 
 ``` r
 {r eval=FALSE}
