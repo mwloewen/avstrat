@@ -20,7 +20,9 @@ functions facilitate ingesting from stratigraphic layer data templates.
 
 You can install avstrat from CRAN \[when/if it is accepted there\] or
 from a downloaded source file off the GitLab approved repository (Code -
-Download source code - tar.gz).
+Download source code - tar.gz). For option 2, you’ll need to download
+the source repo as a tar.gz and map the path to the location on your
+computer.
 
 ``` r
 {r eval=FALSE}
@@ -29,18 +31,27 @@ Download source code - tar.gz).
 
 # Option 2: Install from source file:
 install.packages("path/to/avstrat_0.0.0.9000.tar.gz", repos = NULL, type = "source")
-
-# Option 2: Run this if I've added you as a collaborator on GitHub and you have Git and GitHub setup on your system:
-remotes::install_gitlab("mwloewen/avstrat", build_vignettes = TRUE)
 ```
 
-To install the development version, use the ‘remotes’ package. \[This
+To install the development version, use the ‘devtools’ package. \[This
 also won’t work until the code is public\].
 
 ``` r
-remotes::install_gitlab("vsc/tephra/tools/avstrat", 
+devtools::install_gitlab("vsc/tephra/tools/avstrat", 
                         host = "code.usgs.gov", 
                         build_vignettes = TRUE)
+```
+
+You can also install the development version from a mirrored repo on
+Github \[This will work now and is the easiest way to install the
+package until the repo is public\].
+
+``` r
+devtools::install_github(
+  "https://github.com/mwloewen/avstrat",
+  auth_token = "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", #The auth token will not be needed once this is reviwed and public, it is only here while the repo is private before approval
+  build_vignettes = TRUE
+)
 ```
 
 ## Example
