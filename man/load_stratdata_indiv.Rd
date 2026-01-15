@@ -120,7 +120,8 @@ plus collapsed sample information:
 \code{load_stratdata_indiv()} loads necessary data for \code{avstrat} from separate
 station (location), section (section metadata), stratlayer, and sample data.
 Allows upload of smaller number of tables if data are already joined together
-(e.g., stations-sections combined, or layers-samples combined).
+(e.g., stations-sections combined, or layers-samples combined). The function
+also extracts and prints a list of unique stratigraphic sections.
 }
 \examples{
 # Locate the example Excel files shipped with the package
