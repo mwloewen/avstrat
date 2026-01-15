@@ -157,3 +157,9 @@ workflow can be accessed with the installed package at:
 ``` r
 vignette("avstrat-workflow-examples", package = "avstrat")
 ```
+
+## Contributing
+
+If find problems with this package or have features you’d like to see,
+please open an issue or consider contributing yourself, I would love to
+have more contributors to the package!
