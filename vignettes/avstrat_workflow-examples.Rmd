@@ -16,19 +16,20 @@ knitr::opts_chunk$set(
 
 # Workflow examples for avstrat
 
-This vignette walks through a typical workflow for using the avstrat package. You can copy this vignette to your own project folder and to setup running your own data!
+This vignette walks through a typical workflow for using the avstrat package. As a starting point for a project workflow, I suggest you copy the contents of this markdown file as a new document in your own project folder. I like to setup projects with a similar structure to packages, with this markdown file as my primary code workflow, and a subfolder called 'data' where I store all data that I'll be analyzing.
 
 ## Setup
 
-To start, you'll need to install any packages that you want to use. This needs to only be run once, or again to get the latest package updates.
+To start, you'll need to install any packages that you want to use. You only need to run this once, or again to get the latest package updates. For current usage, see the package ReadMe for installation. There are two options below which will only work once the package is public.
 
 ```{r setup installation, eval=FALSE}
+#install the stable CRAN release:
 #install.packages("avstrat") # this will only work once it is on CRAN
-# Run this if you have a downloaded source file for the package:
-install.packages("path/to/avstrat_0.0.0.9000.tar.gz", repos = NULL, type = "source")
 
-# Run this if I've added you as a collaborator on GitHub and you have Git and GitHub setup on your system:
-remotes::install_github("mwloewen/avstrat", build_vignettes = TRUE)
+#install the development version from gitlab using the devtools package:
+devtools::install_gitlab("vsc/tephra/tools/avstrat", 
+                        host = "code.usgs.gov", 
+                        build_vignettes = TRUE)
 
 # Other packages you'll want intstalled if you don't have them already
 install.packages("tidyverse")
@@ -46,7 +47,7 @@ library(patchwork)
 library(avstrat)
 ```
 
-I also suggest overriding the default `ggplot2` theme (because it's ugly), and provide a theme that works well with this package's figures, but you can use any theme you like.
+I also suggest overriding the default 'ggplot2' theme (because it's ugly), and provide a theme that works well with this package's figures, but you can use any theme you like.
 
 ```{r}
 theme_set(theme_avstrat())
@@ -61,11 +62,18 @@ path_samples <- system.file("extdata", "example_samples_stations_upload_2024.xls
 path_layers <- system.file("extdata", "example_layers_upload_2024.xlsx",
                            package = "avstrat"
 )
+path_indiv <- system.file("extdata", "example_inputs.xlsx",
+                           package = "avstrat"
+)
 ```
 
-## Data import
+## Data import 
 
-The first step is to bring stratigraphy data into the coding environment. The data entry currently takes the layer and station-sample GeoDIVA upload templates. These templates provide strict data validation fields that help ensure your data are comparable with plotting and database submission.
+The first step is to bring stratigraphy data into the coding environment. There is more than one way to prepare your data, and avstrat has functions for loading data from .xlsx files that follow one of two templates, described in the next sections. There is also an example loaded dataset, `example_data_strat` included with avstrat that you can view and use to create your own upload routine.
+
+### GeoDIVA forms
+
+The Alaska Volcano Observatory has a mature database that includes stratigraphic layer data, "GeoDIVA". This database has established data upload forms, which avstrat has functions for directly loading. These templates provide strict data validation fields that help ensure your data are comparable with plotting and database submission.
 
 To copy the example templates into your working directory:
 
@@ -90,6 +98,51 @@ mydata <- load_geodiva_forms(station_sample_upload = station_sample_upload,
 
 You can see you successfully loaded 9 example sections that come with the package.
 
+### Individual upload
+
+If you are not already uploading to GeoDIVA, you may prefer to us a more elegant upload. This is my preferred approach to preparing data for formal data releases. Each tab of a .xlsx spreadsheet contains a single data type, such as "stations" or "samples". The tables are linked in a quasi database sytle, with a linking column such as "station_id" denoting the station (location information) a sample was collected at. This way, if you collect multiple samples at a single station, you only have to list the station metadata once. This is especially handy for stratigraphic "layers", where you always have many layers for a single section and station.
+
+To copy an example of these options into your working directory:
+
+```{r copy-templates-indiv, eval=FALSE}
+file.copy(path_indiv, "example_inputs.xlsx")
+```
+
+There are several options in this example template:
+
+1.  stations: a table of stations and location metadata.
+
+2.  sections: a table of all sections with section metadata, must include a link to station_id.
+
+3.  stations_sections: since typically you only have a single section at each station, this tab gives you the option of merging these together into one table.
+
+4.  layers: a table with stratigraphic layer metadata. Each layer must be linked to a section_id.
+
+5.  layers_sample: this is a case where samples from a layer are noted in a nested list in the layer, with multiple samples separated with a pipe "\|". This follows the GeoDIVA upload format. I personally DO NOT like this approach.
+
+6.  samples: samples and sample metadata. Should be linked to a station_id.
+
+7.  samples_layer: this is my preferred approach to uploading samples, simply link the sample metadata to station_id and layer_id. ]
+
+To read this example data into your environment and the `avstrat` format:
+
+```{r}
+stations_data <- readxl::read_xlsx(path_indiv, sheet = "stations")
+sections_data <- readxl::read_xlsx(path_indiv, sheet = "sections")
+layers_data <- readxl::read_xlsx(path_indiv, sheet = "layers")
+samples_data <- readxl::read_xlsx(path_indiv, sheet = "samples_layer")
+
+
+mydata <- load_stratdata_indiv(
+  stations_upload = stations_data,
+  sections_upload = sections_data,
+  layers_upload = layers_data,
+  samples_upload = samples_data
+)
+```
+
+This is one example of how to use this upload, but you can mix it up. For example, if you include your sections with station metadata, simply upload "stations_sections" to both "stations_upload" and "sections_upload".
+
 ## Basic plotting
 
 You can make a simple grainsize-depth section with either increasing or decreasing grainsize on the x-axis. You can also make a simple column with no grainsize data.
@@ -102,6 +155,7 @@ grainsize_decreasing <- ggstrat(df = mydata,
                                 grainsize_direction = "decreasing")
 grainsize_column <- ggstrat_column(df = mydata, 
                                 section_name = "21LSHD02")
+# Combine all 3 plots using Patchwork
 grainsize_increasing + grainsize_decreasing + grainsize_column
 ```
 
@@ -115,7 +169,7 @@ grainsize_increasing + sample_label
 
 ## Interactive app
 
-For most projects, you might want to explore your sections spatially a map. `avstrat` has a interactivey Shiny app that let's you do this. The map is genearted with the `leaflet` package, and when you click on a station, it will display the strat section on the right. Be sure to close the app popup window before coming back to this notebook!
+For most projects, you might want to explore your sections spatially a map. `avstrat` has a interactive Shiny app that let's you do this. The map is generated with the `leaflet` package, and when you click on a station, it will display the strat section on the right. Be sure to close the app popup window before coming back to this notebook!
 
 ```{r, eval=FALSE}
 run_ggstrat_app(df = mydata)

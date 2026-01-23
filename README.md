@@ -22,7 +22,8 @@ You can install avstrat from CRAN \[when/if it is accepted there\] or
 from a downloaded source file off the GitLab approved repository (Code -
 Download source code - tar.gz). For option 2, you’ll need to download
 the source repo as a tar.gz and map the path to the location on your
-computer.
+computer (replace “path/to” with the file path on your local computer
+where you save the download).
 
 ``` r
 {r eval=FALSE}
@@ -34,7 +35,7 @@ install.packages("path/to/avstrat_0.0.0.9000.tar.gz", repos = NULL, type = "sour
 ```
 
 To install the development version, use the ‘devtools’ package. \[This
-also won’t work until the code is public\].
+won’t work until the code is public\].
 
 ``` r
 devtools::install_gitlab("vsc/tephra/tools/avstrat", 
@@ -56,8 +57,13 @@ devtools::install_github(
 
 ## Example
 
-To upload data from Geodiva submission templates (Stations-Samples and
-Layers):
+To upload data from GeoDIVA submission templates (Stations-Samples and
+Layers), you will need to have two excel files that match GeoDIVA upload
+templates. Examples can be found in this repo under
+`inst/extdata/example_layers_upload_2024.xlsx` and
+`inst/extdata/example_samples_stations_upload_2024.xlsx`. In the code
+chunk below, replace “path_layers.xlsx” with the file path and file name
+of your files.
 
 ``` r
 library(readxl)
@@ -65,10 +71,33 @@ library(avstrat)
 
 data_strat <- load_geodiva_forms(
    station_sample_upload = 
-     readxl::read_excel("path_samples.xlsx", sheet = "Data"),
+     readxl::read_excel("path/to/samples_stations_upload.xlsx", sheet = "Data"),
    layer_upload = 
-     readxl::read_excel("path_layers.xlsx", sheet = "Data")
+     readxl::read_excel("path/to/layers_upload.xlsx", sheet = "Data")
  )
+```
+
+The GeoDIVA templates have some idiosyncrasies unique to Alaska Volcano
+Observatory projects and database history. Most people may find a more
+generic upload template more useful, and there is an upload function for
+that too! See `inst/extdata/example_inputs.xlsx`, which includes data
+tabs broken down into different data types: stations, sections, layers,
+and samples. These can be partially merged (e.g., “stations_sections”)
+or separate. Samples can be linked to layers as a nested list (similar
+to the GeoDIVA layer upload, “layers-sample”) or each sample linked to a
+single layer (“samples_layer”). Using the later option:
+
+``` r
+data_strat <- load_stratdata_indiv(
+  stations_upload = readxl::read_xlsx("path/to/example_inputs.xlsx", 
+                                      sheet = "stations"),
+  sections_upload = readxl::read_xlsx("path/to/example_inputs.xlsx", 
+                                      sheet = "sections"),
+  layers_upload = readxl::read_xlsx("path/to/example_inputs.xlsx", 
+                                      sheet = "layers"),
+  samples_upload = readxl::read_xlsx("path/to/example_inputs.xlsx", 
+                                      sheet = "samples_layer"),
+)
 ```
 
 Once you have the data in your environment, you can make a basic
@@ -79,7 +108,7 @@ library(ggplot2)
 #> Warning: package 'ggplot2' was built under R version 4.5.2
 library(readxl)
 library(avstrat)
-# Load data
+# Load data (this is a pre-loaded example dataset that is part of avstrat)
 data_strat <- example_data_strat
 
 # Set theme
@@ -128,3 +157,9 @@ workflow can be accessed with the installed package at:
 ``` r
 vignette("avstrat-workflow-examples", package = "avstrat")
 ```
+
+## Contributing
+
+If find problems with this package or have features you’d like to see,
+please open an issue or consider contributing yourself, I would love to
+have more contributors to the package!
