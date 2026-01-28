@@ -18,24 +18,22 @@ functions facilitate ingesting from stratigraphic layer data templates.
 
 ## Installation
 
-You can install avstrat from CRAN \[when/if it is accepted there\] or
-from a downloaded source file off the GitLab approved repository (Code -
-Download source code - tar.gz). For option 2, you’ll need to download
-the source repo as a tar.gz and map the path to the location on your
-computer (replace “path/to” with the file path on your local computer
-where you save the download).
+You can install avstrat from CRAN or from a downloaded source file off
+the GitLab approved repository (Code - Download source code - tar.gz).
+For option 2, you’ll need to download the source repo as a tar.gz and
+map the path to the location on your computer (replace “path/to” with
+the file path on your local computer where you save the download).
 
 ``` r
 {r eval=FALSE}
 # Option 1: Install from CRAN:
-# install.packages("avstrat") # this will only work once it is on CRAN
+install.packages("avstrat")
 
 # Option 2: Install from source file:
 install.packages("path/to/avstrat_0.0.0.9000.tar.gz", repos = NULL, type = "source")
 ```
 
-To install the development version, use the ‘devtools’ package. \[This
-won’t work until the code is public\].
+To install the development version, use the ‘devtools’ package.
 
 ``` r
 devtools::install_gitlab("vsc/tephra/tools/avstrat", 
@@ -44,13 +42,11 @@ devtools::install_gitlab("vsc/tephra/tools/avstrat",
 ```
 
 You can also install the development version from a mirrored repo on
-Github \[This will work now and is the easiest way to install the
-package until the repo is public\].
+Github.
 
 ``` r
 devtools::install_github(
   "https://github.com/mwloewen/avstrat",
-  auth_token = "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", #The auth token will not be needed once this is reviwed and public, it is only here while the repo is private before approval
   build_vignettes = TRUE
 )
 ```
@@ -105,8 +101,9 @@ stratigraphic plot and use the avstrat theme:
 
 ``` r
 library(ggplot2)
-#> Warning: package 'ggplot2' was built under R version 4.5.2
+#> Warning: package 'ggplot2' was built under R version 4.4.3
 library(readxl)
+#> Warning: package 'readxl' was built under R version 4.4.3
 library(avstrat)
 # Load data (this is a pre-loaded example dataset that is part of avstrat)
 data_strat <- example_data_strat
@@ -139,7 +136,7 @@ combine them with the patchwork package.
 
 ``` r
 library(patchwork)
-#> Warning: package 'patchwork' was built under R version 4.5.2
+#> Warning: package 'patchwork' was built under R version 4.4.3
 p1 <- ggstrat(df = data_strat, section_name = '21LSHD02')
 p2 <- ggstrat_label(df = data_strat, section_name = '21LSHD02')
 

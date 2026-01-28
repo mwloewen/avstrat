@@ -8,3 +8,6 @@
 ^vignettes/*_files$
 ^codecov\.yml$
 ^cran-comments\.md$
+^CRAN-SUBMISSION$
+^code\.json$
+^DISCLAIMER\.md$
