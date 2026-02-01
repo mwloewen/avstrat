@@ -13,8 +13,8 @@
 #'   section. It should accept at least two arguments: the full data
 #'   frame (`df`) and a section identifier (`stratsection_name`).
 #'   Defaults to [ggstrat()].
-#' @param outdir Directory where plots will be saved. Defaults to a folder within
-#'   the current working director named `"StratSectionsPlotted"`, created if it
+#' @param outdir Directory where plots will be saved. Suggest supplying a name
+#'   such as `"StratSectionsPlotted"`, will create directory if it
 #'   does not exist.
 #' @param file_type File extension for saved plots (e.g. `"png"`,
 #'   `"pdf"`). Defaults to `"png"`.
@@ -35,22 +35,25 @@
 #' @export
 #'
 #' @examples
-#' \dontrun{
 #' # Save plots for each section using the default ggstrat() function
-#' ggstrat_bulk_save(example_data_strat)
+#' td <- tempdir()
+#' ggstrat_bulk_save(example_data_strat, outdir = td)
 #'
 #' # Save plots using a different plotting function
-#' ggstrat_bulk_save(example_data_strat, plotfunction = ggstrat_column)
-#'
-#' # Save plots to a custom directory with higher resolution
 #' ggstrat_bulk_save(example_data_strat,
-#'                   outdir = "results/plots",
+#'                   plotfunction = ggstrat_column,
+#'                   outdir = td)
+#'
+#' # Save plots with higher resolution
+#' ggstrat_bulk_save(example_data_strat,
+#'                   outdir = td,
 #'                   dpi = 600)
 #'
-#' }
+#' # Optional cleanup
+#' unlink(list.files(td, full.names = TRUE))
 ggstrat_bulk_save <- function(df,
                               plotfunction = ggstrat,
-                              outdir = "StratSectionsPlotted",
+                              outdir = NULL,
                               file_type = "png",
                               dpi = 300,
                               width = 4,
@@ -58,11 +61,14 @@ ggstrat_bulk_save <- function(df,
                               units = "in",
                               ask = TRUE,
                               ...) {
-  # Creates a folder to save plots in and save the plots as the StationID name.
-  dir.create(file.path("StratSectionsPlotted"),
-    showWarnings = FALSE,
-    recursive = TRUE
-  )
+  # Require user to explicitly supply an output directory
+  if (is.null(outdir)) {
+    stop("Please supply 'outdir' to specify where plots should be saved.",
+         call. = FALSE)
+  }
+    # Creates a folder to save plots in and save the plots as the StationID name.
+  dir.create(outdir, showWarnings = FALSE, recursive = TRUE)
+
   # Get list of unique sections
   SectionList <- sort(c(unique(df$stratsection_name)))
   nplots <- length(SectionList)
