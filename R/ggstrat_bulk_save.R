@@ -35,6 +35,7 @@
 #' @export
 #'
 #' @examples
+#' \donttest{
 #' # Save plots for each section using the default ggstrat() function
 #' td <- tempdir()
 #' ggstrat_bulk_save(example_data_strat, outdir = td)
@@ -51,6 +52,7 @@
 #'
 #' # Optional cleanup
 #' unlink(list.files(td, full.names = TRUE))
+#' }
 ggstrat_bulk_save <- function(df,
                               plotfunction = ggstrat,
                               outdir = NULL,

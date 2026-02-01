@@ -63,6 +63,7 @@ any plotting function that returns a ggplot object (e.g. one of the
 package's plotting functions, or a custom function).
 }
 \examples{
+\donttest{
 # Save plots for each section using the default ggstrat() function
 td <- tempdir()
 ggstrat_bulk_save(example_data_strat, outdir = td)
@@ -79,4 +80,5 @@ ggstrat_bulk_save(example_data_strat,
 
 # Optional cleanup
 unlink(list.files(td, full.names = TRUE))
+}
 }
