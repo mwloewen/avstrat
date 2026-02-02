@@ -1,5 +1,5 @@
 Package: avstrat
-Title: Stratigraphic Data Processing Section Plots
+Title: Stratigraphic Data Processing and Section Plots
 Version: 0.1.0
 Authors@R: 
     person("Matthew", "Loewen", 

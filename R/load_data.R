@@ -4,7 +4,7 @@
 #' station (location), section (section metadata), stratlayer, and sample data.
 #' Allows upload of smaller number of tables if data are already joined together
 #' (e.g., stations-sections combined, or layers-samples combined). The function
-#' also extracts and prints a list of unique stratigraphic sections.
+#' also extracts and, optionally, prints a list of unique stratigraphic sections.
 #'
 #' @param stations_upload A data frame with "station" metadata. The
 #'   following columns are required in order to work with `avstrat` functions:
@@ -90,6 +90,8 @@
 #' @param samples_upload A data frame with "sample" metadata.
 #'   - `stratlayer_name`: Unique identifier for the layer, must match an existing value in layer_upload.
 #'   - `SampleID`: Unique identifier for the sample.
+#' @param verbose Logical. If TRUE (default), prints a message listing the
+#'  imported stratigraphic sections. Set to FALSE to suppress console output.
 #'
 #' @return A data frame of layers joined with section and station metadata,
 #'   plus collapsed sample information:
@@ -120,7 +122,8 @@
 load_stratdata_indiv <- function(stations_upload,
                                  sections_upload,
                                  layers_upload,
-                                 samples_upload = NULL) {
+                                 samples_upload = NULL,
+                                 verbose = TRUE) {
   # start with layers
   out <- layers_upload
 
@@ -207,7 +210,9 @@ load_stratdata_indiv <- function(stations_upload,
   }
   # Print the section list
   SectionList <- sort(unique(out[["stratsection_name"]]))
-  cat(paste(SectionList, collapse = "\n"))
+  if (verbose) {
+    message("Imported sections:\n", paste(SectionList, collapse = "\n"))
+  }
 
   return(out)
 }
@@ -219,8 +224,8 @@ load_stratdata_indiv <- function(stations_upload,
 #' upload forms, specifically a form that includes Station and Sample data and
 #' another form that includes the Layer data. It merges these datasets,
 #' resolves any conflicts in key fields, and prepares a consolidated dataset
-#' for further analysis. The function also extracts and prints a list of unique
-#' stratigraphic sections.
+#' for further analysis. The function also extracts and, optionally, prints a
+#' list of unique stratigraphic sections.
 #'
 #' @param station_sample_upload data frame created from uploaded GeoDIVA format
 #'  Station/Sample upload sheet, usually uploaded with `readxl::read_xlsx()`
@@ -228,6 +233,8 @@ load_stratdata_indiv <- function(stations_upload,
 #' @param layer_upload data frame created from uploaded GeoDIVA format
 #'  Layers upload sheet, usually uploaded with `readxl::read_xlsx()`
 #'  linked to filepath.
+#' @param verbose Logical. If TRUE (default), prints a message listing the
+#'  imported stratigraphic sections. Set to FALSE to suppress console output.
 #'
 #' @importFrom stats na.omit
 #' @importFrom rlang .data
@@ -254,7 +261,8 @@ load_stratdata_indiv <- function(stations_upload,
 #'   result <- load_geodiva_forms(station_sample_upload, layer_upload)
 #'   head(result)  # result is a data frame
 load_geodiva_forms <- function(station_sample_upload,
-                               layer_upload) {
+                               layer_upload,
+                               verbose = TRUE) {
   # Get a clean station list
   stations <- station_sample_upload |>
     dplyr::select(
@@ -340,7 +348,9 @@ load_geodiva_forms <- function(station_sample_upload,
 
   # Print the section list
   SectionList <- sort(unique(data_strat[["stratsection_name"]]))
-  cat(paste(SectionList, collapse = "\n"))
+  if (verbose) {
+    message("Imported sections:\n", paste(SectionList, collapse = "\n"))
+  }
 
   # Return dataframe
   return(data_strat)
