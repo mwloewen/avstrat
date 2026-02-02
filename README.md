@@ -151,7 +151,7 @@ to the package!
 
 ## License and Disclaimer
 
-[License](https://code.usgs.gov/vsc/tephra/tools/avstrat/-/blob/main/DISCLAIMER.md?ref_type=heads):
+[License](https://code.usgs.gov/vsc/tephra/tools/avstrat/-/blob/main/LICENSE.md?ref_type=heads):
 This project is in the public domain.
 
 [Disclaimer](https://code.usgs.gov/vsc/tephra/tools/avstrat/-/blob/main/DISCLAIMER.md?ref_type=heads):

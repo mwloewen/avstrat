@@ -116,8 +116,8 @@ vignette("avstrat-workflow-examples", package = "avstrat")
 
 If you find problems with this package or have features you'd like to see, please [open an issue](https://code.usgs.gov/vsc/tephra/tools/avstrat/-/issues) or consider contributing yourself, I would love to have more contributors to the package!
 
-## License and Disclaimer 
+## License and Disclaimer
 
-[License](https://code.usgs.gov/vsc/tephra/tools/avstrat/-/blob/main/DISCLAIMER.md?ref_type=heads): This project is in the public domain.
+[License](https://code.usgs.gov/vsc/tephra/tools/avstrat/-/blob/main/LICENSE.md?ref_type=heads): This project is in the public domain.
 
 [Disclaimer](https://code.usgs.gov/vsc/tephra/tools/avstrat/-/blob/main/DISCLAIMER.md?ref_type=heads): This software is preliminary or provisional and is subject to revision.
