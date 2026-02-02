@@ -1,3 +1,5 @@
+# avstrat 0.1.1
+
 # avstrat 0.1.0 (https://doi.org/10.5066/P14PYILN)
 
 * Initial CRAN submission.
