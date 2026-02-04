@@ -4,7 +4,7 @@
 \alias{load_geodiva_forms}
 \title{Load stratigraphic data from GeoDIVA upload forms}
 \usage{
-load_geodiva_forms(station_sample_upload, layer_upload)
+load_geodiva_forms(station_sample_upload, layer_upload, verbose = TRUE)
 }
 \arguments{
 \item{station_sample_upload}{data frame created from uploaded GeoDIVA format
@@ -14,6 +14,9 @@ linked to filepath.}
 \item{layer_upload}{data frame created from uploaded GeoDIVA format
 Layers upload sheet, usually uploaded with \code{readxl::read_xlsx()}
 linked to filepath.}
+
+\item{verbose}{Logical. If TRUE (default), prints a message listing the
+imported stratigraphic sections. Set to FALSE to suppress console output.}
 }
 \value{
 A data frame containing the merged and cleaned stratigraphic
@@ -24,8 +27,8 @@ data, ready for further analysis.
 upload forms, specifically a form that includes Station and Sample data and
 another form that includes the Layer data. It merges these datasets,
 resolves any conflicts in key fields, and prepares a consolidated dataset
-for further analysis. The function also extracts and prints a list of unique
-stratigraphic sections.
+for further analysis. The function also extracts and, optionally, prints a
+list of unique stratigraphic sections.
 }
 \examples{
 # Locate the example Excel files shipped with the package

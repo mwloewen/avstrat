@@ -7,7 +7,7 @@
 ggstrat_bulk_save(
   df,
   plotfunction = ggstrat,
-  outdir = "StratSectionsPlotted",
+  outdir = NULL,
   file_type = "png",
   dpi = 300,
   width = 4,
@@ -28,8 +28,8 @@ section. It should accept at least two arguments: the full data
 frame (\code{df}) and a section identifier (\code{stratsection_name}).
 Defaults to \code{\link[=ggstrat]{ggstrat()}}.}
 
-\item{outdir}{Directory where plots will be saved. Defaults to a folder within
-the current working director named \code{"StratSectionsPlotted"}, created if it
+\item{outdir}{Directory where plots will be saved. Suggest supplying a name
+such as \code{"StratSectionsPlotted"}, will create directory if it
 does not exist.}
 
 \item{file_type}{File extension for saved plots (e.g. \code{"png"},
@@ -63,17 +63,22 @@ any plotting function that returns a ggplot object (e.g. one of the
 package's plotting functions, or a custom function).
 }
 \examples{
-\dontrun{
+\donttest{
 # Save plots for each section using the default ggstrat() function
-ggstrat_bulk_save(example_data_strat)
+td <- tempdir()
+ggstrat_bulk_save(example_data_strat, outdir = td)
 
 # Save plots using a different plotting function
-ggstrat_bulk_save(example_data_strat, plotfunction = ggstrat_column)
-
-# Save plots to a custom directory with higher resolution
 ggstrat_bulk_save(example_data_strat,
-                  outdir = "results/plots",
+                  plotfunction = ggstrat_column,
+                  outdir = td)
+
+# Save plots with higher resolution
+ggstrat_bulk_save(example_data_strat,
+                  outdir = td,
                   dpi = 600)
 
+# Optional cleanup
+unlink(list.files(td, full.names = TRUE))
 }
 }

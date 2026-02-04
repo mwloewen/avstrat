@@ -15,7 +15,7 @@ knitr::opts_chunk$set(
 
 # avstrat <img src="man/figures/logo.png" align="right" height="200"/>
 
-Tools for Generating Stratigraphic Sections
+Stratigraphic Data Processing and Section Plots
 
 This package provides tools for data processing and generating stratigraphic sections for volcanic deposits and tephrastratigraphy. Package was developed for studies on Alaska volcanoes ("av") where stratigraphic ("strat") figures are needed for interpreting eruptive histories, but the methods are applicable to any sediment stratigraphy project. The primary outputs are ggplot figures of stratigraphic sections–`ggstrat()`, `ggstrat_column()`, `ggstrat_sampleID()`-but the data processing logic `add_depths()` and `add_layer_widths()` enable motivated users to create custom visualizations. Various load_data functions facilitate ingesting from stratigraphic layer data templates.
 
@@ -96,12 +96,6 @@ theme_set(theme_avstrat())
 ggstrat(df = data_strat, section_name = '21LSHD02')
 ```
 
-The default `ggstrat()` plot emphasizes coarser grained deposits as larger bars, useful for recognizing significant tephra deposits. Many prefer stratigraphic profiles to reflect the erosional profile of an outcrop. This would be best achieved by recording a "erodability" metric in the field, but a rough version of this is to plot the fine-grained layers as thicker than coarse grained layers, as these typically are less prone to erosion.
-
-```{r example_reverse_grainsize_plot, fig.width=2.5, fig.height=5, out.width='31%'}
-ggstrat(df = data_strat, section_name = '21LSHD02', grainsize_direction = "decreasing")
-```
-
 You can also plot sample identification along side the section. and combine them with the patchwork package.
 
 ```{r example_combined_sample_plot, fig.width=5, fig.height=6, out.width='62.5%'}
@@ -120,4 +114,10 @@ vignette("avstrat-workflow-examples", package = "avstrat")
 
 ## Contributing
 
-If find problems with this package or have features you'd like to see, please open an issue or consider contributing yourself, I would love to have more contributors to the package!
+If you find problems with this package or have features you'd like to see, please [open an issue](https://code.usgs.gov/vsc/tephra/tools/avstrat/-/issues) or consider contributing yourself, I would love to have more contributors to the package!
+
+## License and Disclaimer
+
+[License](https://code.usgs.gov/vsc/tephra/tools/avstrat/-/blob/main/LICENSE.md?ref_type=heads): This project is in the public domain.
+
+[Disclaimer](https://code.usgs.gov/vsc/tephra/tools/avstrat/-/blob/main/DISCLAIMER.md?ref_type=heads): This software is preliminary or provisional and is subject to revision.

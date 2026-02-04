@@ -1,20 +1,24 @@
 Package: avstrat
-Title: Tools for Generating Stratigraphic Sections
-Version: 0.1.0
+Title: Stratigraphic Data Processing and Section Plots
+Version: 0.1.1
 Authors@R: 
     person("Matthew", "Loewen", 
     email = "mloewen@usgs.gov", 
     role = c("aut", "cre"),
     comment = c(ORCID = "0000-0002-5621-285X"))
-Description: Tools for data processing and generating stratigraphic sections 
+Description: Data processing and generating stratigraphic sections 
     for volcanic deposits and tephrastratigraphy. Package was developed for
     studies on Alaska volcanoes ("av") where stratigraphic ("strat") figures 
     are needed for interpreting eruptive histories, but the methods are applicable
-    to any sediment stratigraphy project. 
+    to any sediment stratigraphy project. Plotting styles inspired by "SedLog"
+    (Zervas et al. 2009) <doi:10.1016/j.cageo.2009.02.009> but with 
+    more customizable outputs and flexible data input based on best practice
+    recommendations for the tephra community (Wallace et al. 2022) 
+    <doi:10.1038/s41597-022-01515-y>.
 License: CC0
 Copyright: This software is in the public domain because it contains materials
     that originally came from the United States Geological Survey, an agency of
-    the United States Department of Interior. 
+    the United States Department of the Interior. 
 BugReports: https://code.usgs.gov/vsc/tephra/tools/avstrat/-/issues
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)

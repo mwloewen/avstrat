@@ -8,7 +8,8 @@ load_stratdata_indiv(
   stations_upload,
   sections_upload,
   layers_upload,
-  samples_upload = NULL
+  samples_upload = NULL,
+  verbose = TRUE
 )
 }
 \arguments{
@@ -107,6 +108,9 @@ Grain size values must be chosen from the validated list (White & Houghton,
 \item \code{stratlayer_name}: Unique identifier for the layer, must match an existing value in layer_upload.
 \item \code{SampleID}: Unique identifier for the sample.
 }}
+
+\item{verbose}{Logical. If TRUE (default), prints a message listing the
+imported stratigraphic sections. Set to FALSE to suppress console output.}
 }
 \value{
 A data frame of layers joined with section and station metadata,
@@ -121,7 +125,7 @@ plus collapsed sample information:
 station (location), section (section metadata), stratlayer, and sample data.
 Allows upload of smaller number of tables if data are already joined together
 (e.g., stations-sections combined, or layers-samples combined). The function
-also extracts and prints a list of unique stratigraphic sections.
+also extracts and, optionally, prints a list of unique stratigraphic sections.
 }
 \examples{
 # Locate the example Excel files shipped with the package

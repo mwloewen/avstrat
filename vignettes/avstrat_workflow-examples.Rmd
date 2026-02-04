@@ -67,7 +67,7 @@ path_indiv <- system.file("extdata", "example_inputs.xlsx",
 )
 ```
 
-## Data import 
+## Data import
 
 The first step is to bring stratigraphy data into the coding environment. There is more than one way to prepare your data, and avstrat has functions for loading data from .xlsx files that follow one of two templates, described in the next sections. There is also an example loaded dataset, `example_data_strat` included with avstrat that you can view and use to create your own upload routine.
 
@@ -212,6 +212,7 @@ More likely, once you have a plot you're happy with, you'll want to save all you
 ```{r bulk-save, eval=FALSE}
 ggstrat_bulk_save(df = mydata,
                   plotfunction = ggstrat_samples,
+                  outdir = "StratSectionsPLotted",
                   file_type = "png",
                   width = 6,
                   height = 6,
