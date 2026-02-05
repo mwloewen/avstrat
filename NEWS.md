@@ -1,3 +1,5 @@
+# avstrat (development version)
+
 # avstrat 0.1.1
 * Revision for CRAN submission.
 * Changed title to reduce redundancy. Added citation to description field. Updated ReadMe and other associated files.
