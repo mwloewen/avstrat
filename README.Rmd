@@ -17,22 +17,20 @@ knitr::opts_chunk$set(
 
 Stratigraphic Data Processing and Section Plots
 
+[![CRAN version](http://www.r-pkg.org/badges/version/avstrat)](https://cran.r-project.org/package=avstrat) [![](http://cranlogs.r-pkg.org/badges/avstrat)](https://cran.r-project.org/package=avstrat) [![](http://cranlogs.r-pkg.org/badges/grand-total/avstrat)](https://cran.r-project.org/package=avstrat)
+
 This package provides tools for data processing and generating stratigraphic sections for volcanic deposits and tephrastratigraphy. Package was developed for studies on Alaska volcanoes ("av") where stratigraphic ("strat") figures are needed for interpreting eruptive histories, but the methods are applicable to any sediment stratigraphy project. The primary outputs are ggplot figures of stratigraphic sections–`ggstrat()`, `ggstrat_column()`, `ggstrat_sampleID()`-but the data processing logic `add_depths()` and `add_layer_widths()` enable motivated users to create custom visualizations. Various load_data functions facilitate ingesting from stratigraphic layer data templates.
 
 ## Installation
 
-You can install avstrat from CRAN or from a downloaded source file off the GitLab approved repository (Code - Download source code - tar.gz). For option 2, you'll need to download the source repo as a tar.gz and map the path to the location on your computer (replace "path/to" with the file path on your local computer where you save the download).
+You can install avstrat from CRAN:
 
 ``` r
 {r eval=FALSE}
-# Option 1: Install from CRAN:
 install.packages("avstrat")
-
-# Option 2: Install from source file:
-install.packages("path/to/avstrat_0.0.0.9000.tar.gz", repos = NULL, type = "source")
 ```
 
-To install the development version, use the 'devtools' package.
+You can install the development version, use the 'devtools' package:
 
 ```{r eval=FALSE}
 devtools::install_gitlab("vsc/tephra/tools/avstrat", 
@@ -40,7 +38,7 @@ devtools::install_gitlab("vsc/tephra/tools/avstrat",
                         build_vignettes = TRUE)
 ```
 
-You can also install the development version from a mirrored repo on Github.
+You can also install the development version from a mirrored repo on Github:
 
 ```{r eval=FALSE}
 devtools::install_github(

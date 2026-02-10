@@ -5,6 +5,11 @@
 
 Stratigraphic Data Processing and Section Plots
 
+[![CRAN
+version](http://www.r-pkg.org/badges/version/avstrat)](https://cran.r-project.org/package=avstrat)
+[![](http://cranlogs.r-pkg.org/badges/avstrat)](https://cran.r-project.org/package=avstrat)
+[![](http://cranlogs.r-pkg.org/badges/grand-total/avstrat)](https://cran.r-project.org/package=avstrat)
+
 This package provides tools for data processing and generating
 stratigraphic sections for volcanic deposits and tephrastratigraphy.
 Package was developed for studies on Alaska volcanoes (“av”) where
@@ -18,22 +23,14 @@ functions facilitate ingesting from stratigraphic layer data templates.
 
 ## Installation
 
-You can install avstrat from CRAN or from a downloaded source file off
-the GitLab approved repository (Code - Download source code - tar.gz).
-For option 2, you’ll need to download the source repo as a tar.gz and
-map the path to the location on your computer (replace “path/to” with
-the file path on your local computer where you save the download).
+You can install avstrat from CRAN:
 
 ``` r
 {r eval=FALSE}
-# Option 1: Install from CRAN:
 install.packages("avstrat")
-
-# Option 2: Install from source file:
-install.packages("path/to/avstrat_0.0.0.9000.tar.gz", repos = NULL, type = "source")
 ```
 
-To install the development version, use the ‘devtools’ package.
+You can install the development version, use the ‘devtools’ package:
 
 ``` r
 devtools::install_gitlab("vsc/tephra/tools/avstrat", 
@@ -42,7 +39,7 @@ devtools::install_gitlab("vsc/tephra/tools/avstrat",
 ```
 
 You can also install the development version from a mirrored repo on
-Github.
+Github:
 
 ``` r
 devtools::install_github(
@@ -101,9 +98,8 @@ stratigraphic plot and use the avstrat theme:
 
 ``` r
 library(ggplot2)
-#> Warning: package 'ggplot2' was built under R version 4.4.3
+#> Warning: package 'ggplot2' was built under R version 4.5.2
 library(readxl)
-#> Warning: package 'readxl' was built under R version 4.4.3
 library(avstrat)
 # Load data (this is a pre-loaded example dataset that is part of avstrat)
 data_strat <- example_data_strat
@@ -122,7 +118,7 @@ combine them with the patchwork package.
 
 ``` r
 library(patchwork)
-#> Warning: package 'patchwork' was built under R version 4.4.3
+#> Warning: package 'patchwork' was built under R version 4.5.2
 p1 <- ggstrat(df = data_strat, section_name = '21LSHD02')
 p2 <- ggstrat_label(df = data_strat, section_name = '21LSHD02')
 
