@@ -9,6 +9,10 @@ Stratigraphic Data Processing and Section Plots
 version](http://www.r-pkg.org/badges/version/avstrat)](https://cran.r-project.org/package=avstrat)
 [![](http://cranlogs.r-pkg.org/badges/avstrat)](https://cran.r-project.org/package=avstrat)
 [![](http://cranlogs.r-pkg.org/badges/grand-total/avstrat)](https://cran.r-project.org/package=avstrat)
+[![CRAN
+check](https://gitlab.com/%3Cgroup%3E/%3Cproject%3E/badges/main/pipeline.svg?job=cran-check)](https://gitlab.com/%3Cgroup%3E/%3Cproject%3E/-/jobs)
+[![coverage
+report](https://gitlab.com/%3Cgroup%3E/%3Cproject%3E/badges/main/coverage.svg)](https://gitlab.com/%3Cgroup%3E/%3Cproject%3E/commits/main)
 
 This package provides tools for data processing and generating
 stratigraphic sections for volcanic deposits and tephrastratigraphy.

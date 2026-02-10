@@ -11,3 +11,4 @@
 ^CRAN-SUBMISSION$
 ^code\.json$
 ^DISCLAIMER\.md$
+^\.gitlab-ci\.yml$

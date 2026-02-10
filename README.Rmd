@@ -17,7 +17,7 @@ knitr::opts_chunk$set(
 
 Stratigraphic Data Processing and Section Plots
 
-[![CRAN version](http://www.r-pkg.org/badges/version/avstrat)](https://cran.r-project.org/package=avstrat) [![](http://cranlogs.r-pkg.org/badges/avstrat)](https://cran.r-project.org/package=avstrat) [![](http://cranlogs.r-pkg.org/badges/grand-total/avstrat)](https://cran.r-project.org/package=avstrat)
+[![CRAN version](http://www.r-pkg.org/badges/version/avstrat)](https://cran.r-project.org/package=avstrat) [![](http://cranlogs.r-pkg.org/badges/avstrat)](https://cran.r-project.org/package=avstrat) [![](http://cranlogs.r-pkg.org/badges/grand-total/avstrat)](https://cran.r-project.org/package=avstrat) [![CRAN check](https://gitlab.com/%3Cgroup%3E/%3Cproject%3E/badges/main/pipeline.svg?job=cran-check)](https://gitlab.com/%3Cgroup%3E/%3Cproject%3E/-/jobs) [![coverage report](https://gitlab.com/%3Cgroup%3E/%3Cproject%3E/badges/main/coverage.svg)](https://gitlab.com/%3Cgroup%3E/%3Cproject%3E/commits/main)
 
 This package provides tools for data processing and generating stratigraphic sections for volcanic deposits and tephrastratigraphy. Package was developed for studies on Alaska volcanoes ("av") where stratigraphic ("strat") figures are needed for interpreting eruptive histories, but the methods are applicable to any sediment stratigraphy project. The primary outputs are ggplot figures of stratigraphic sections–`ggstrat()`, `ggstrat_column()`, `ggstrat_sampleID()`-but the data processing logic `add_depths()` and `add_layer_widths()` enable motivated users to create custom visualizations. Various load_data functions facilitate ingesting from stratigraphic layer data templates.
 
