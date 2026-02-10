@@ -1,4 +1,5 @@
 # avstrat (development version)
+* Adding some new badges and CI/CD stuff.
 
 # avstrat 0.1.1
 * Revision for CRAN submission.
