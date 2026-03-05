@@ -4,7 +4,6 @@
 #' and matching the author's preferred aesthetics.
 #'
 #' @param base_size Base font size. Defaults to 11.
-#' @param base_family Base font famil. Defaults to Arial.
 #' @importFrom ggplot2 %+replace%
 #'
 #' @return A [ggplot2::theme()] object.
