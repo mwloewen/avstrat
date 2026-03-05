@@ -8,7 +8,7 @@ variables:
   R_LIBS_USER: "$CI_PROJECT_DIR/ci/lib"
 
 before_script:
-  - Rscript -e 'install.packages(c("covr"), repos="https://cloud.r-project.org")'
+  - Rscript -e 'install.packages(c("covr", "patchwork", "leaflet"), repos="https://cloud.r-project.org")'
 
 cran-check:
   stage: check
