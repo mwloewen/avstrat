@@ -1,4 +1,4 @@
-image: rocker/devtools:4.3.2
+image: rocker/verse:4.3.2
 
 stages:
   - check
@@ -8,22 +8,7 @@ variables:
   R_LIBS_USER: "$CI_PROJECT_DIR/ci/lib"
 
 before_script:
-  - apt-get update
-  - apt-get install -y --no-install-recommends \
-      libcurl4-openssl-dev \
-      libssl-dev \
-      libxml2-dev \
-      libfontconfig1-dev \
-      libfreetype6-dev \
-      libharfbuzz-dev \
-      libfribidi-dev \
-      libpng-dev \
-      libtiff5-dev \
-      libjpeg-dev \
-      make \
-      g++ \
-      pkg-config
-  - Rscript -e 'install.packages(c("devtools", "covr"), repos="https://cloud.r-project.org")'
+  - Rscript -e 'install.packages(c("covr"), repos="https://cloud.r-project.org")'
 
 cran-check:
   stage: check
