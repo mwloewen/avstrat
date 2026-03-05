@@ -4,7 +4,6 @@
 #' and matching the author's preferred aesthetics.
 #'
 #' @param base_size Base font size. Defaults to 11.
-#' @param base_family Base font famil. Defaults to Arial.
 #' @importFrom ggplot2 %+replace%
 #'
 #' @return A [ggplot2::theme()] object.
@@ -18,8 +17,8 @@
 #' # Set the custom theme as default for all plots
 #' ggplot2::theme_set(theme_avstrat())
 #' ggstrat(df = example_data_strat, section_name = "21LSHD02")
-theme_avstrat <- function(base_size = 11, base_family = "arial") {
-  ggplot2::theme_classic(base_size = base_size, base_family = base_family) %+replace%
+theme_avstrat <- function(base_size = 11) {
+  ggplot2::theme_classic(base_size = base_size) %+replace%
     ggplot2::theme(
       line = ggplot2::element_line(color = "black", linewidth = 0.5),
       text = ggplot2::element_text(color = "black"),

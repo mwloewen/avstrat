@@ -84,3 +84,4 @@ path_indiv <- system.file("extdata", "example_inputs.xlsx",
      expected_samples_difcol,
      file = "tests/testthat/testdata/expected_samples_difcol.rds"
    )
+
