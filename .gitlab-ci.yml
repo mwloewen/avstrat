@@ -8,7 +8,21 @@ variables:
   R_LIBS_USER: "$CI_PROJECT_DIR/ci/lib"
 
 before_script:
-  - apt-get update && apt-get install -y libcurl4-openssl-dev libssl-dev libxml2-dev
+  - apt-get update
+  - apt-get install -y --no-install-recommends \
+      libcurl4-openssl-dev \
+      libssl-dev \
+      libxml2-dev \
+      libfontconfig1-dev \
+      libfreetype6-dev \
+      libharfbuzz-dev \
+      libfribidi-dev \
+      libpng-dev \
+      libtiff5-dev \
+      libjpeg-dev \
+      make \
+      g++ \
+      pkg-config
   - Rscript -e 'install.packages(c("devtools", "covr"), repos="https://cloud.r-project.org")'
 
 cran-check:
@@ -30,3 +44,4 @@ test-coverage:
         coverage_format: cobertura
         path: cobertura.xml
   coverage: '/Coverage: \d+\.\d+/'
+
