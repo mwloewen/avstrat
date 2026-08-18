@@ -4,12 +4,10 @@
 \alias{theme_avstrat}
 \title{Custom theme for stratigraphic plots}
 \usage{
-theme_avstrat(base_size = 11, base_family = "arial")
+theme_avstrat(base_size = 11)
 }
 \arguments{
 \item{base_size}{Base font size. Defaults to 11.}
-
-\item{base_family}{Base font famil. Defaults to Arial.}
 }
 \value{
 A \code{\link[ggplot2:theme]{ggplot2::theme()}} object.
