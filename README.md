@@ -10,9 +10,9 @@ version](http://www.r-pkg.org/badges/version/avstrat)](https://cran.r-project.or
 [![](http://cranlogs.r-pkg.org/badges/avstrat)](https://cran.r-project.org/package=avstrat)
 [![](http://cranlogs.r-pkg.org/badges/grand-total/avstrat)](https://cran.r-project.org/package=avstrat)
 [![pipeline
-status](https://code.usgs.gov/mloewen/demo_package/badges/main/pipeline.svg)](https://code.usgs.gov/mloewen/demo_package/-/commits/main)
+status](https://code.usgs.gov/vsc/tephra/tools/avstrat/badges/main/pipeline.svg)](https://code.usgs.gov/vsc/tephra/tools/avstrat/-/commits/main)
 [![coverage
-report](https://code.usgs.gov/mloewen/demo_package/badges/main/coverage.svg)](https://code.usgs.gov/mloewen/demo_package/-/commits/main)
+report](https://code.usgs.gov/vsc/tephra/tools/avstrat/badges/main/coverage.svg)](https://code.usgs.gov/vsc/tephra/tools/avstrat/-/commits/main)
 
 This package provides tools for data processing and generating
 stratigraphic sections for volcanic deposits and tephrastratigraphy.
