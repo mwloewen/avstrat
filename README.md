@@ -9,10 +9,10 @@ Stratigraphic Data Processing and Section Plots
 version](http://www.r-pkg.org/badges/version/avstrat)](https://cran.r-project.org/package=avstrat)
 [![](http://cranlogs.r-pkg.org/badges/avstrat)](https://cran.r-project.org/package=avstrat)
 [![](http://cranlogs.r-pkg.org/badges/grand-total/avstrat)](https://cran.r-project.org/package=avstrat)
-[![CRAN
-check](https://gitlab.com/%3Cgroup%3E/%3Cproject%3E/badges/main/pipeline.svg?job=cran-check)](https://gitlab.com/%3Cgroup%3E/%3Cproject%3E/-/jobs)
+[![pipeline
+status](https://code.usgs.gov/mloewen/demo_package/badges/main/pipeline.svg)](https://code.usgs.gov/mloewen/demo_package/-/commits/main)
 [![coverage
-report](https://gitlab.com/%3Cgroup%3E/%3Cproject%3E/badges/main/coverage.svg)](https://gitlab.com/%3Cgroup%3E/%3Cproject%3E/commits/main)
+report](https://code.usgs.gov/mloewen/demo_package/badges/main/coverage.svg)](https://code.usgs.gov/mloewen/demo_package/-/commits/main)
 
 This package provides tools for data processing and generating
 stratigraphic sections for volcanic deposits and tephrastratigraphy.
@@ -102,7 +102,6 @@ stratigraphic plot and use the avstrat theme:
 
 ``` r
 library(ggplot2)
-#> Warning: package 'ggplot2' was built under R version 4.5.2
 library(readxl)
 library(avstrat)
 # Load data (this is a pre-loaded example dataset that is part of avstrat)
@@ -115,23 +114,20 @@ theme_set(theme_avstrat())
 ggstrat(df = data_strat, section_name = '21LSHD02')
 ```
 
-<img src="man/figures/README-example_basic_grainsize_plot-1.png" width="31%" />
+<img src="man/figures/README-example_basic_grainsize_plot-1.png" alt="" width="31%" />
 
 You can also plot sample identification along side the section. and
 combine them with the patchwork package.
 
 ``` r
 library(patchwork)
-#> Warning: package 'patchwork' was built under R version 4.5.2
 p1 <- ggstrat(df = data_strat, section_name = '21LSHD02')
 p2 <- ggstrat_label(df = data_strat, section_name = '21LSHD02')
 
 p1 + p2
-#> Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :
-#> font family not found in Windows font database
 ```
 
-<img src="man/figures/README-example_combined_sample_plot-1.png" width="62.5%" />
+<img src="man/figures/README-example_combined_sample_plot-1.png" alt="" width="62.5%" />
 
 More examples and demonstration of how to create your own custom plots
 will be provided \[eventually\] in vignettes! Currently, a more detailed

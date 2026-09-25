@@ -1,0 +1,28 @@
+# =============================================================================
+# .gitlab-ci.yml for demo_package — adopts the rpackage_cicd template.
+# This single `include:` is the ENTIRE file needed; the template provides four
+# report-only jobs: pii-scan, r-check, coverage, and usgs-code-review.
+#
+# After the template moves to code.usgs.gov/vsc/..., update the `project:`
+# path below accordingly (see the template README, "Moving the template repo").
+# =============================================================================
+
+include:
+  - project: 'mloewen/rpackage_cicd'
+    ref: main
+    file: '/templates/r-package-ci.yml'
+
+# ---------------------------------------------------------------------------
+# Optional per-repo overrides (uncomment as needed):
+#
+# variables:
+#   # Warn-only email domains for the PII scan (default: usgs.gov):
+#   PII_ALLOWED_EMAIL_DOMAINS: "usgs.gov doi.gov"
+#   # Make the PII scan always pass (report findings without a warning icon):
+#   PII_NO_FAIL: "true"
+#   # Point R jobs at an R image with a compiler + test tooling
+#   # (default: rocker/tidyverse:latest):
+#   R_IMAGE: "rocker/tidyverse:latest"
+#   # Make the USGS Code Review job's icon go red on FAILs (WARNs never do):
+#   CHECKLIST_STRICT: "true"
+# ---------------------------------------------------------------------------
