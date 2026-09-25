@@ -12,7 +12,6 @@ include:
     ref: main
     file: '/templates/r-package-ci.yml'
 
-
 # ---------------------------------------------------------------------------
 # Optional per-repo overrides (uncomment as needed):
 #
