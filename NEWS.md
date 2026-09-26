@@ -13,3 +13,4 @@
 * Initial CRAN submission.
 * Provides core package functionality for importing, processing, and plotting stratigraphic data.
 * Includes basic documentation and a workflow vignette.
+ 
