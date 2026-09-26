@@ -1,6 +1,6 @@
 # avstrat (development version)
 * Fixed a MacOS bug where pdf saved plots did not render label text.
-* Adding some new badges and CI/CD stuff.
+* Added CI/CD pipelines and badges.
 
 # avstrat 0.1.1
 * Revision for CRAN submission.
