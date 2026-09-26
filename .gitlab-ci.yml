@@ -1,29 +1,48 @@
 # =============================================================================
-# .gitlab-ci.yml for demo_package — adopts the rpackage_cicd template.
-# This single `include:` is the ENTIRE file needed; the template provides four
-# report-only jobs: pii-scan, r-check, coverage, and usgs-code-review.
+# r-package-ci.yml — entry template for the reusable R-package CI/CD pipeline.
 #
-# After the template moves to code.usgs.gov/vsc/..., update the `project:`
-# path below accordingly (see the template README, "Moving the template repo").
+# It provides four report-only jobs (each reports pass/fail via a yellow
+# warning icon on failure but never blocks the pipeline):
+#   - pii-scan          (stage: security,         every push)
+#   - r-check           (stage: r code review,            every push)
+#   - r-coverage          (stage: test coverage,             every push)
+#   - usgs-code-review  (stage: USGS Code Review, every push)
+#
+# Adding a new job later: add templates/jobs/<name>.yml here under `include:`
+# and give it one of the stages below (or add a new stage).
 # =============================================================================
 
 include:
-  - project: 'mloewen/rpackage_cicd'
+  - project: 'mloewen/code_review_cicd'
     ref: main
-    file: '/templates/r-package-ci.yml'
+    file: '/jobs/pii-scan.yml'
+  - project: 'mloewen/code_review_cicd'
+    ref: main
+    file: '/jobs/r-check.yml'
+  - project: 'mloewen/code_review_cicd'
+    ref: main
+    file: '/jobs/r-coverage.yml'
+  - project: 'mloewen/code_review_cicd'
+    ref: main
+    file: '/jobs/usgs-code-review.yml'
 
+# Run the pipeline for tag pipelines and branch pushes.
+workflow:
+  rules:
+    - if: $CI_COMMIT_TAG
+    - if: $CI_COMMIT_BRANCH
 
-# ---------------------------------------------------------------------------
-# Optional per-repo overrides (uncomment as needed):
-#
-# variables:
-#   # Warn-only email domains for the PII scan (default: usgs.gov):
-#   PII_ALLOWED_EMAIL_DOMAINS: "usgs.gov doi.gov"
-#   # Make the PII scan always pass (report findings without a warning icon):
-#   PII_NO_FAIL: "true"
-#   # Point R jobs at an R image with a compiler + test tooling
-#   # (default: rocker/tidyverse:latest):
-#   R_IMAGE: "rocker/tidyverse:latest"
-#   # Make the USGS Code Review job's icon go red on FAILs (WARNs never do):
-#   CHECKLIST_STRICT: "true"
-# ---------------------------------------------------------------------------
+# All jobs default to the CHS shared runners.
+default:
+  tags:
+    - chs-shared
+
+stages:
+  - security
+  - r code review
+  - test coverage
+  - USGS Code Review
+
+variables:
+  # CHS internal CRAN mirror.
+  CRAN: "https://rpkg.chs.usgs.gov/prod-cran/latest"
