@@ -13,16 +13,16 @@
 # =============================================================================
 
 include:
-  - project: 'mloewen/code_review_cicd'
+  - project: 'vsc/srr/code_review_cicd'
     ref: main
     file: '/jobs/pii-scan.yml'
-  - project: 'mloewen/code_review_cicd'
+  - project: 'vsc/srr/code_review_cicd'
     ref: main
     file: '/jobs/r-check.yml'
-  - project: 'mloewen/code_review_cicd'
+  - project: 'vsc/srr/code_review_cicd'
     ref: main
     file: '/jobs/r-coverage.yml'
-  - project: 'mloewen/code_review_cicd'
+  - project: 'vsc/srr/code_review_cicd'
     ref: main
     file: '/jobs/usgs-code-review.yml'
 
