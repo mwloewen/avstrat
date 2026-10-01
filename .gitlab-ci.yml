@@ -21,13 +21,11 @@ include:
     file: '/jobs/r-vuln-check.yml'
   - project: 'vsc/srr/code_review_cicd'
     ref: main
-    file: '/jobs/r-check.yml'
-  - project: 'vsc/srr/code_review_cicd'
-    ref: main
-    file: '/jobs/r-coverage.yml'
-  - project: 'vsc/srr/code_review_cicd'
-    ref: main
     file: '/jobs/usgs-code-review.yml'
+  - project: 'vsc/srr/code_review_cicd'
+    ref: main
+    file: '/jobs/r-check-coverage.yml'
+
 
 # Run the pipeline for tag pipelines and branch pushes.
 workflow:
@@ -42,9 +40,8 @@ default:
 
 stages:
   - security
-  - r code review
-  - test coverage
   - USGS Code Review
+  - r code review
 
 variables:
   # CHS internal CRAN mirror.
