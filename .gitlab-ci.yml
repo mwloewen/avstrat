@@ -18,6 +18,9 @@ include:
     file: '/jobs/pii-scan.yml'
   - project: 'vsc/srr/code_review_cicd'
     ref: main
+    file: '/jobs/r-vuln-check.yml'
+  - project: 'vsc/srr/code_review_cicd'
+    ref: main
     file: '/jobs/r-check.yml'
   - project: 'vsc/srr/code_review_cicd'
     ref: main
