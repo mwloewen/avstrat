@@ -37,7 +37,7 @@ default:
 
 stages:
   - security
-  - USGS Code Review
+  - usgs
   - r code review
 
 variables:
